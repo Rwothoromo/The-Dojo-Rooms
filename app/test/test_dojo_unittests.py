@@ -30,7 +30,6 @@ class TestDojo(unittest.TestCase):
 
     def test_add_person_successfully(self):
         dojo = Dojo()
-        initial_room_count = len(dojo.all_rooms)
 
         person_name1 = "Eli1 Rwt1"
         person_type1 = "STAFF"
@@ -48,6 +47,25 @@ class TestDojo(unittest.TestCase):
         self.assertTrue(add_person1)
         self.assertTrue(add_person2)
         self.assertFalse(add_person3)
+
+    def test_print_room_successfully(self):
+        dojo = Dojo()
+
+        multiple_rooms = ["Blue", "Green", "Orange"]
+        multiple_rooms_type = "office"
+        multiple_offices = dojo.create_room(multiple_rooms_type, multiple_rooms)
+
+        person_name1 = "Eli1 Rwt1"
+        person_type1 = "STAFF"
+        add_person1 = dojo.add_person(person_name1, person_type1)
+
+        room_name1 = "Blue"
+        rooms_print1 = dojo.print_room(room_name1)
+        self.assertTrue(rooms_print1)
+
+        room_name2 = "Green"
+        rooms_print2 = dojo.print_room(room_name2)
+        self.assertFalse(rooms_print2)
 
 
 if __name__ == '__main__':
