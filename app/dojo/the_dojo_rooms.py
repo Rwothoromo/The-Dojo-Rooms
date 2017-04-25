@@ -36,10 +36,14 @@ class Dojo(object):
         self.all_fellows = {persons for persons in self.all_persons if self.all_persons[persons](1) == 'FELLOW'}
 
     def create_room(self, room_type, room_names):
+        initial_room_count = len(self.all_rooms)
         if room_type.lower() == 'office' or room_type.lower() == 'livingspace':
             for room_name in room_names:
                 if room_name not in self.all_rooms:
                     self.all_rooms[room_name] = (room_type.lower(), 0)
+            new_room_count = len(self.all_rooms)
+        room_increment = new_room_count - initial_room_count
+        if len(room_names) == room_increment:
             return True
         return False
 
