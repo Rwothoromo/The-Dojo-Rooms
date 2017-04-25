@@ -22,52 +22,54 @@ Options:
     --timeout=<seconds> Time [default: 30]
 """
 
-import sys
-import cmd
+# import sys
+# import cmd
 from docopt import docopt, DocoptExit
 
 class Dojo(object):
     def __init__(self):
         self.all_rooms = {}
+        self.all_livingspaces = {rooms for rooms in self.all_rooms if self.all_rooms[rooms](0) == 'livingspace'}
+        self.all_offices = {rooms for rooms in self.all_rooms if self.all_rooms[rooms](0) == 'livingspace'}
         self.all_persons = {}
+        self.all_staff = {persons for persons in self.all_persons if self.all_persons[persons](1) == 'STAFF'}
+        self.all_fellows = {persons for persons in self.all_persons if self.all_persons[persons](1) == 'FELLOW'}
 
     def create_room(self, room_type, room_names):
-
         if room_type.lower() == 'office' or room_type.lower() == 'livingspace':
             for room_name in room_names:
                 if room_name not in self.all_rooms:
-                    self.all_rooms[room_name] = room_type.lower()
+                    self.all_rooms[room_name] = (room_type.lower(), 0)
             return True
-                # else:
-                #     print("{} room already exists".format(room_name))
         return False
 
     def add_person(self, person_name, person_type, wants_accommodation=None):
-        if person_type.upper() != 'STAFF' and person_type.upper() != 'FELLOW':
-            print("Person type must be 'STAFF' or 'FELLOW'")
-
         if person_type.upper() == 'STAFF':
             if not wants_accommodation:
+                self.all_persons[person_name] = (person_type, "Blue")
                 print("{} {} has been successfully added.".format(person_type, person_name))
                 print("{} has been allocated the office Blue".format(person_name.split(' ')[0]))
                 return True
             else:
                 print("Person type 'STAFF' cannot seek accomodation")
 
-        if person_type.upper() == 'FELLOW':
-            if not wants_accommodation:
-                print("Person type 'FELLOW' must indicate 'Y' for yes or 'N' for no, for accomodation")
+        elif person_type.upper() == 'FELLOW':
 
             if wants_accommodation == 'N':
+                self.all_persons[person_name] = (person_type, "Blue")
                 print("{} {} has been successfully added.".format(person_type, person_name))
                 print("{} has been allocated the office Blue".format(person_name.split()[0]))
                 return True
 
             if wants_accommodation == 'Y':
+                self.all_persons[person_name] = (person_type, "Blue", "Python")
                 print("{} {} has been successfully added.".format(person_type, person_name))
                 print("{} has been allocated the office Blue".format(person_name.split()[0]))
                 print("{} has been allocated the livingspace Python".format(person_name.split()[0]))
                 return True
+
+        else:
+            print("Person type must be 'STAFF' or 'FELLOW'")
 
         return False
 
@@ -89,9 +91,9 @@ class Staff(object):
 class Fellow(object):
     pass
 
-if __name__ == '__main__':
-    args = docopt(__doc__, sys.argv[1:])
-    print(args)
+# if __name__ == '__main__':
+#     args = docopt(__doc__, sys.argv[1:])
+#     print(args)
 
     # if an argument called create_room was passed, execute the create_room logic.
     # if args['create_room']:
