@@ -1,5 +1,6 @@
 venv
 .cache
+app/.cache
 app/dojo/__init__.pyc
 app/dojo/the_dojo_rooms.pyc
 app/test/__pycache__
