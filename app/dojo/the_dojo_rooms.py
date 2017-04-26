@@ -1,8 +1,3 @@
-#!/usr/bin/env python
-# import sys
-# import cmd
-# from docopt import docopt, DocoptExit
-
 class Dojo(object):
     def __init__(self):
         self.all_rooms = {}
@@ -14,12 +9,16 @@ class Dojo(object):
 
     def create_room(self, room_type, room_name):
         initial_room_count = len(self.all_rooms)
-        if room_type.lower() == 'office' or room_type.lower() == 'livingspace':
+        room_type = room_type.lower()
+        if room_type == 'office' or room_type == 'livingspace':
             for room in room_name:
-                if room not in self.all_rooms:
-                    self.all_rooms[room] = (room_type.lower(), 0)
-            new_room_count = len(self.all_rooms)
+                if room in self.all_rooms.keys():
+                    print("{} room already exists".format(room))
+                else:
+                    self.all_rooms[room] = (room_type, 0)
 
+
+        new_room_count = len(self.all_rooms)
         room_increment = new_room_count - initial_room_count
         if len(room_name) == room_increment:
             return True
@@ -75,13 +74,3 @@ class Staff(object):
 
 class Fellow(object):
     pass
-
-# if __name__ == '__main__':
-#     args = docopt(__doc__, sys.argv[1:])
-#     print(args)
-
-    # if an argument called create_room was passed, execute the create_room logic.
-    # if args['create_room']:
-    #     create_room(args['<room_type>'], args['<room_name>'])
-    # elif args['add_person']:
-    #     add_person(args['<name>'])
