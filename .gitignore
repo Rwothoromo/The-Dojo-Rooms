@@ -1,0 +1,9 @@
+venv
+.cache
+app/.cache
+app/dojo/__init__.pyc
+app/dojo/persons.pyc
+app/dojo/rooms.pyc
+app/dojo/the_dojo_rooms.pyc
+app/test/__pycache__
+app/test/__init__.pyc
