@@ -40,7 +40,9 @@ class Dojo(object):
         self.allocated_rooms = {}
         self.unallocated_rooms = {}
 
-        self.all_persons = []
+        self.all_persons = {}
+        # self.allocated_persons = {}
+        # self.unallocated_persons = {}
 
     # Creates rooms in the Dojo.
     def create_room(self, room_type, room_name):
@@ -73,7 +75,7 @@ class Dojo(object):
 
         if room_type.lower() == 'livingspace':
             for room in room_name:
-                if room in self.all_rooms:
+                if room in self.all_rooms.keys():
                     print("{} room already exists".format(room))
                 else:
                     livingspace = LivingSpace(room)
@@ -94,15 +96,18 @@ class Dojo(object):
 
     # Adds a person to the system and allocates the person to a random room.
     def add_person(self, person_name, person_type, wants_accommodation=None):
+        if person_name in self.all_persons.keys():
+            return("{} already exists".format(person_name))
+
         if person_type.upper() == 'STAFF':
             if not wants_accommodation:
-                staff = Staff(person_name)
-                self.all_persons.append(staff)
-                print("{} {} has been successfully added.".format(person_type.capitalize(), person_name))
-
                 if not self.unallocated_rooms:
                     return "No Room space available"
+
+                staff = Staff(person_name)
                 self.allocate_office(staff)
+                self.all_persons[person_name] = staff
+                print("{} {} has been successfully added.".format(person_type.capitalize(), person_name))
                 return True
             else:
                 raise ValueError("Person type 'STAFF' cannot seek accomodation")
@@ -115,22 +120,22 @@ class Dojo(object):
                 raise ValueError("Person type 'FELLOW' must indicate 'Y' or 'N' for accomodation")
 
             if wants_accommodation == 'N':
+                if not self.unallocated_rooms:
+                    return "No Room space available"
                 fellow = Fellow(person_name)
-                self.all_persons.append(fellow)
-                print("{} {} has been successfully added.".format(person_type.capitalize(), person_name))
-
                 self.allocate_office(fellow)
+                self.all_persons[person_name] = fellow
+                print("{} {} has been successfully added.".format(person_type.capitalize(), person_name))
                 return True
 
             if wants_accommodation == 'Y':
-                fellow = Fellow(person_name)
-                self.all_persons.append(fellow)
-                print("{} {} has been successfully added.".format(person_type.capitalize(), person_name))
-
                 if not self.unallocated_rooms:
                     return "No Room space available"
+                fellow = Fellow(person_name)
                 self.allocate_office(fellow)
                 self.allocate_livingspace(fellow)
+                self.all_persons[person_name] = fellow
+                print("{} {} has been successfully added.".format(person_type.capitalize(), person_name))
                 return True
         return False
 
@@ -162,10 +167,10 @@ class Dojo(object):
             raise TypeError
 
         if room_name not in self.all_rooms.keys():
-            raise ValueError("{} does not exist in rooms!".format(room_name))
+            print("{} does not exist in rooms!".format(room_name))
+            return False
 
         room_occupants = self.all_rooms[room_name].occupants
         for individual in room_occupants:
             print(individual.person_name, '\n')
-            return True
-        return False
+        return True

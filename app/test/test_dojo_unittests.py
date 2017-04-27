@@ -63,9 +63,16 @@ class TestDojo(unittest.TestCase):
         rooms_print1 = dojo.print_room(room_name1)
         self.assertTrue(rooms_print1)
 
-        room_name2 = "Green"
+        room_name2 = "Green" #empty room
         rooms_print2 = dojo.print_room(room_name2)
-        self.assertFalse(rooms_print2)
+        self.assertTrue(rooms_print2)
+
+        room_name3 = "A12" #inexistent room
+        rooms_print3 = dojo.print_room(room_name3)
+        self.assertFalse(rooms_print3)
+
+        room_name4 = 4 #wrong value
+        self.assertRaises(TypeError, dojo.print_room, room_name4)
 
 if __name__ == '__main__':
     unittest.main()
