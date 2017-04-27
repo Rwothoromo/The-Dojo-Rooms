@@ -9,9 +9,7 @@ class Room(object):
         self.occupants = []
 
     def check_room_availability(self):
-        if len(self.occupants) < self.max_occupants:
-            return True
-        return False
+        return len(self.occupants) < self.max_occupants
 
     def add_occupant(self, person_object):
         if self.check_room_availability():

@@ -47,6 +47,7 @@ class Dojo(object):
     # Creates rooms in the Dojo.
     def create_room(self, room_type, room_name):
         initial_room_count = len(self.all_rooms)
+        room_increment = 0
 
         if not isinstance(room_type, str):
             raise TypeError("Room type must be a string")
@@ -90,9 +91,7 @@ class Dojo(object):
 
         new_room_count = len(self.all_rooms)
         room_increment = new_room_count - initial_room_count
-        if len(room_name) == room_increment:
-            return True
-        return False
+        return room_increment
 
     # Adds a person to the system and allocates the person to a random room.
     def add_person(self, person_name, person_type, wants_accommodation=None):
@@ -105,7 +104,11 @@ class Dojo(object):
                     return "No Room space available"
 
                 staff = Staff(person_name)
-                self.allocate_office(staff)
+
+                allocated_office_name = self.allocate_office(staff)
+                self.allocated_rooms[allocated_office_name] = self.unallocated_rooms[allocated_office_name]
+                # del self.unallocated_rooms[allocated_office_name]
+
                 self.all_persons[person_name] = staff
                 print("{} {} has been successfully added.".format(person_type.capitalize(), person_name))
                 return True
@@ -122,8 +125,13 @@ class Dojo(object):
             if wants_accommodation == 'N':
                 if not self.unallocated_rooms:
                     return "No Room space available"
+
                 fellow = Fellow(person_name)
-                self.allocate_office(fellow)
+
+                allocated_office_name = self.allocate_office(fellow)
+                self.allocated_rooms[allocated_office_name] = self.unallocated_rooms[allocated_office_name]
+                # del self.unallocated_rooms[allocated_office_name]
+
                 self.all_persons[person_name] = fellow
                 print("{} {} has been successfully added.".format(person_type.capitalize(), person_name))
                 return True
@@ -131,29 +139,50 @@ class Dojo(object):
             if wants_accommodation == 'Y':
                 if not self.unallocated_rooms:
                     return "No Room space available"
+
                 fellow = Fellow(person_name)
-                self.allocate_office(fellow)
-                self.allocate_livingspace(fellow)
+
+                allocated_office_name = self.allocate_office(fellow)
+                self.allocated_rooms[allocated_office_name] = self.unallocated_rooms[allocated_office_name]
+                # del self.unallocated_rooms[allocated_office_name]
+
+                allocated_livingspace_name = self.allocate_livingspace(fellow)
+                self.allocated_rooms[allocated_livingspace_name] = self.unallocated_rooms[allocated_livingspace_name]
+                # del self.unallocated_rooms[allocated_livingspace_name]
+
                 self.all_persons[person_name] = fellow
                 print("{} {} has been successfully added.".format(person_type.capitalize(), person_name))
                 return True
         return False
 
+    # assign an Office to a person
     def allocate_office(self, person):
         first_name = person.person_name.split(' ')[0]
-        random_office = random.choice([room for room in self.unallocated_rooms.values() if isinstance(room, Office)])
+        offices_list = [room for room in self.unallocated_rooms.values() if isinstance(room, Office)]
+
+        if not offices_list:
+            return None
+
+        random_office = random.choice(offices_list)
         random_office.add_occupant(person)
         print("{} has been allocated the office {}.".format(first_name, random_office.room_name))
-        return True
+        return random_office.room_name
 
+    # assign a LivingSpace to a person
     def allocate_livingspace(self, person):
         first_name = person.person_name.split(' ')[0]
-        random_livingspace = random.choice([room for room in self.unallocated_rooms.values() if isinstance(room, LivingSpace)])
+        livingspaces_list = [room for room in self.unallocated_rooms.values() if isinstance(room, LivingSpace)]
+
+        if not livingspaces_list:
+            return None
+
+        random_livingspace = random.choice(livingspaces_list)
         random_livingspace.add_occupant(person)
         print("{} has been allocated the livingspace {}.".format(first_name, random_livingspace.room_name))
-        return True
+        return random_livingspace.room_name
 
-    def returncheck_room_allocations(self):
+    # check which are rooms allocated or not
+    def check_room_allocations(self):
         self.allocated_rooms = []
         self.unallocated_rooms = []
 
@@ -177,3 +206,20 @@ class Dojo(object):
         for individual in room_occupants:
             print(individual.person_name, '\n')
         return True
+
+    # Prints a list of allocations onto the screen.
+    def print_allocations(self, filename=None):
+        if not self.allocated_rooms:
+            return "No Rooms allocated!"
+
+        for room in self.allocated_rooms.keys():
+            print(room.upper(), '\n', '-'*30)
+            room_occupants = self.allocated_rooms[room].occupants
+
+            for room_occupant in room_occupants:
+                print("MEMBER ,".format(room_occupant.person_name.capitalize()))
+            print('\n\n')
+        return True
+
+if __name__ == '__main__':
+    main()
