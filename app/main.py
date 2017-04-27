@@ -6,6 +6,7 @@ Usage:
   main.py create_room <room_type> <room_name>...
   main.py add_person <first_name> <last_name> <person_type> [<wants_accommodation>]
   main.py print_room <room_name>
+  main.py print_allocations [<filename>]
   main.py (-h | --help)
 
 Options:
@@ -30,6 +31,10 @@ def add_person(first_name, last_name, person_type, wants_accommodation):
 # print_room() is used to display the people in a given room
 def print_room(room_name):
     dojo.print_room(room_name[0])
+
+def print_allocations(filename):
+    dojo.print_allocations(filename)
+
 
 
 if __name__ == '__main__':
