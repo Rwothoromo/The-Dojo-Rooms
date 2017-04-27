@@ -1,49 +1,95 @@
 #!/usr/bin/env python
 """
-This file demonstrates the functionality of The Dojo Rooms project.
-
 Usage:
-  main.py create_room <room_type> <room_name>...
-  main.py add_person <first_name> <last_name> <person_type> [<wants_accommodation>]
-  main.py print_room <room_name>
-  main.py print_allocations [<filename>]
-  main.py (-h | --help)
+  TheDojoRooms create_room <room_type> <room_name>...
+  TheDojoRooms add_person <first_name> <last_name> <person_type> [<wants_accommodation>]
+  TheDojoRooms print_room <room_name>
+  TheDojoRooms print_allocations [<filename>]
+  TheDojoRooms
+  TheDojoRooms (-h | --help)
 
 Options:
+  -i --interactive Interactive Mode
   -h --help     Show this screen.
 
 """
 
+import sys
+import cmd
 from docopt import docopt
 from dojo.the_dojo_rooms import Dojo
 
 dojo = Dojo()
 
-# create_room() is used to create rooms in The Dojo Rooms
-def create_room(room_type, room_name):
-    dojo.create_room(room_type, room_name)
+def docopt_cmd(func):
+    """
+    This decorator is used to simplify the try/except block and pass the result
+    of the docopt parsing to the called action.
+    """
+    def fn(self, arg):
+        try:
+            opt = docopt(fn.__doc__, arg)
 
-# add_person() is used to add persons in The Dojo Rooms
-def add_person(first_name, last_name, person_type, wants_accommodation):
-    person_name = str(first_name) + ' ' + str(last_name)
-    dojo.add_person(person_name, person_type, wants_accommodation)
+        except DocoptExit as e:
+            # The DocoptExit is thrown when the args do not match.
+            # We print a message to the user and the usage block.
+            print('Invalid Command!')
+            print(e)
+            return
 
-# print_room() is used to display the people in a given room
-def print_room(room_name):
-    dojo.print_room(room_name[0])
+        except SystemExit:
+            # The SystemExit exception prints the usage for --help
+            # We do not need to do the print here.
+            return
 
-def print_allocations(filename):
-    dojo.print_allocations(filename)
+        return func(self, opt)
+    fn.__name__ = func.__name__
+    fn.__doc__ = func.__doc__
+    fn.__dict__.update(func.__dict__)
+    return fn
 
+class TheDojoRooms (cmd.Cmd):
+    intro = 'Welcome to The Dojo Rooms!' \
+        + ' Product by Rwothoromo Elijah (www.github.com/Rwothoromo)' \
+        + ' (type help for a list of commands.)'
+    prompt = '(TheDojoRooms) '
+    file = None
 
+    # create_room() is used to create rooms in The Dojo Rooms
+    @docopt_cmd
+    def do_create_room(self, arg):
+        """Usage: create_room <room_type> <room_name>..."""
+        room_type = arg["<room_type>"]
+        room_name = arg["<room_name>"]
+        dojo.create_room(room_type, room_name)
 
-if __name__ == '__main__':
-    arguments = docopt(__doc__)
+    # add_person() is used to add persons in The Dojo Rooms
+    @docopt_cmd
+    def do_add_person(self, arg):
+        """Usage: add_person <first_name> <last_name> <person_type> [<wants_accommodation>]"""
+        person_name = str(arg["<first_name>"]) + ' ' + str(arg["<last_name>"])
+        person_type = arg["<person_type>"]
+        wants_accommodation = arg["<wants_accommodation>"]
+        dojo.add_person(person_name, person_type, wants_accommodation)
 
-    # if an argument called create_room was passed, execute the create_room logic.
-    if arguments['create_room']:
-        create_room(arguments['<room_type>'], arguments['<room_name>'])
-    if arguments['add_person']:
-        add_person(arguments['<first_name>'], arguments['<last_name>'], arguments['<person_type>'], arguments['<wants_accommodation>'])
-    if arguments['print_room']:
-        print_room(arguments['<room_name>'])
+    # print_room() is used to display the people in a given room
+    @docopt_cmd
+    def do_print_room(self, arg):
+        """Usage: print_room <room_name>"""
+        room_name = arg["<room_name>"]
+        dojo.print_room([room_name])
+
+    # print_allocations is used to print a list of allocations onto the screen.
+    @docopt_cmd
+    def do_print_allocations(self, arg):
+        """Usage: print_room <room_name>"""
+        filename = arg["<filename>"]
+        dojo.print_allocations(filename)
+
+    def do_quit(self, arg):
+            """Quits out of Interactive Mode."""
+            print('Thank you for stopping by!')
+            exit()
+
+opt = docopt(__doc__, sys.argv[1:])
+TheDojoRooms().cmdloop()
