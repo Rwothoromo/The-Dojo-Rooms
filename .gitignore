@@ -2,6 +2,7 @@ venv
 .cache
 app/.cache
 app/dojo/__init__.pyc
+app/dojo/dojo_declarative_sqlalchemy.py
 app/dojo/persons.pyc
 app/dojo/rooms.pyc
 app/dojo/the_dojo_rooms.pyc
