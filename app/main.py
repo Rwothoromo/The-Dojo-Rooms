@@ -13,7 +13,73 @@ Options:
 
 """
 
-from docopt import docopt
+import sys
+import cmd
+from docopt import docopt, DocoptExit
+from dojo.the_dojo_rooms import Dojo
+
+
+def docopt_cmd(func):
+    """
+    This decorator is used to simplify the try/except block and pass the result
+    of the docopt parsing to the called action.
+    """
+    def fn(self, arg):
+        try:
+            opt = docopt(fn.__doc__, arg)
+
+        except DocoptExit as e:
+            # The DocoptExit is thrown when the args do not match.
+            print('Invalid Command!')
+            print(e)
+            return
+
+        except SystemExit:
+            # The SystemExit exception prints the usage for --help
+            return
+
+        return func(self, opt)
+
+    fn.__name__ = func.__name__
+    fn.__doc__ = func.__doc__
+    fn.__dict__.update(func.__dict__)
+    return fn
+
+
+class DojoInteractive (cmd.Cmd):
+    intro = 'Welcome to The Dojo Rooms!' \
+        + ' Product by Rwothoromo Elijah (www.github.com/rwothoromo)!' \
+        + ' (type help for a list of commands.)'
+    prompt = '(main.py) '
+    file = None
+
+    @docopt_cmd
+    def do_tcp(self, arg):
+        """Usage: tcp <host> <port> [--timeout=<seconds>]"""
+        print(arg)
+
+    @docopt_cmd
+    def do_serial(self, arg):
+        """Usage: serial <port> [--baud=<n>] [--timeout=<seconds>]
+Options:
+    --baud=<n>  Baudrate [default: 9600]
+        """
+        print(arg)
+
+    def do_quit(self, arg):
+        """Quits out of Interactive Mode."""
+
+        print('Thank you for stopping by! Have a good day!')
+        exit()
+
+
+opt = docopt(__doc__, sys.argv[1:])
+
+if opt['--interactive']:
+    DojoInteractive().cmdloop()
+
+print(opt)
+
 
 # create_room() is used to create rooms in The Dojo Rooms
 def create_room(room_type, room_name):
@@ -56,18 +122,6 @@ def add_person(first_name, last_name, person_type, wants_accommodation=None):
 
         else:
             print("Person type 'FELLOW' must indicate 'Y' or 'N' for accomodation")
-
-    """
-    For example:
-    add_person('Neil', 'Armstrong', 'Staff')
-    Staff Neil Armstrong has been successfully added.
-    Neil has been allocated the office Blue
-
-    add_person('Nelly', 'Armweek', 'Fellow', 'Y')
-    Fellow Nelly Armweek has been successfully added.
-    Nelly has been allocated the office Blue
-    Nelly has been allocated the livingspace Python
-    """
     return True
 
 
