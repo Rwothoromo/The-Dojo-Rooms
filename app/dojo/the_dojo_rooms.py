@@ -86,7 +86,7 @@ class Dojo(object):
                     # new_livingspace = LivingSpaces(livingspace_name=room)
                     # session.add(new_livingspace)
                     # session.commit()
-                    print("An {} called {} has been successfully created!".format(room_type.lower(), room))
+                    print("A {} called {} has been successfully created!".format(room_type.lower(), room))
 
         new_room_count = len(self.all_rooms)
         room_increment = new_room_count - initial_room_count
