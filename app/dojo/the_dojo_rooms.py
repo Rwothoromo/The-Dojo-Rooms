@@ -104,12 +104,9 @@ class Dojo(object):
                     return "No Room space available"
 
                 staff = Staff(person_name)
-
-                allocated_office_name = self.allocate_office(staff)
-                self.allocated_rooms[allocated_office_name] = self.unallocated_rooms[allocated_office_name]
-                # del self.unallocated_rooms[allocated_office_name]
-
+                self.allocate_office(staff)
                 self.all_persons[person_name] = staff
+
                 print("{} {} has been successfully added.".format(person_type.capitalize(), person_name))
                 return True
             else:
@@ -127,11 +124,7 @@ class Dojo(object):
                     return "No Room space available"
 
                 fellow = Fellow(person_name)
-
                 allocated_office_name = self.allocate_office(fellow)
-                self.allocated_rooms[allocated_office_name] = self.unallocated_rooms[allocated_office_name]
-                # del self.unallocated_rooms[allocated_office_name]
-
                 self.all_persons[person_name] = fellow
                 print("{} {} has been successfully added.".format(person_type.capitalize(), person_name))
                 return True
@@ -141,14 +134,8 @@ class Dojo(object):
                     return "No Room space available"
 
                 fellow = Fellow(person_name)
-
-                allocated_office_name = self.allocate_office(fellow)
-                self.allocated_rooms[allocated_office_name] = self.unallocated_rooms[allocated_office_name]
-                # del self.unallocated_rooms[allocated_office_name]
-
-                allocated_livingspace_name = self.allocate_livingspace(fellow)
-                self.allocated_rooms[allocated_livingspace_name] = self.unallocated_rooms[allocated_livingspace_name]
-                # del self.unallocated_rooms[allocated_livingspace_name]
+                self.allocate_office(fellow)
+                self.allocate_livingspace(fellow)
 
                 self.all_persons[person_name] = fellow
                 print("{} {} has been successfully added.".format(person_type.capitalize(), person_name))
@@ -165,8 +152,13 @@ class Dojo(object):
 
         random_office = random.choice(offices_list)
         random_office.add_occupant(person)
+
+        self.allocated_rooms[random_office.room_name] = random_office
+        self.all_rooms[random_office.room_name] = random_office
+        self.unallocated_rooms.pop(random_office.room_name)
+
         print("{} has been allocated the office {}.".format(first_name, random_office.room_name))
-        return random_office.room_name
+        return True
 
     # assign a LivingSpace to a person
     def allocate_livingspace(self, person):
@@ -178,13 +170,18 @@ class Dojo(object):
 
         random_livingspace = random.choice(livingspaces_list)
         random_livingspace.add_occupant(person)
+
+        self.allocated_rooms[random_livingspace.room_name] = random_livingspace
+        self.all_rooms[random_livingspace.room_name] = random_livingspace
+        self.unallocated_rooms.pop(random_livingspace.room_name)
+
         print("{} has been allocated the livingspace {}.".format(first_name, random_livingspace.room_name))
-        return random_livingspace.room_name
+        return True
 
     # check which are rooms allocated or not
     def check_room_allocations(self):
-        self.allocated_rooms = []
-        self.unallocated_rooms = []
+        # self.allocated_rooms = []
+        # self.unallocated_rooms = []
 
         for room in self.all_rooms.keys():
             if self.check_room_availability():
