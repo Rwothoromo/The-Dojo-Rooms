@@ -23,13 +23,13 @@ def create_room(room_type, room_name):
     dojo.create_room(room_type, room_name)
 
 # add_person() is used to add persons in The Dojo Rooms
-def add_person(first_name, last_name, person_type, wants_accommodation=None):
+def add_person(first_name, last_name, person_type, wants_accommodation):
     person_name = str(first_name) + ' ' + str(last_name)
     dojo.add_person(person_name, person_type, wants_accommodation)
 
 # print_room() is used to display the people in a given room
 def print_room(room_name):
-    dojo.print_room(room_name)
+    dojo.print_room(room_name[0])
 
 
 if __name__ == '__main__':
@@ -40,3 +40,5 @@ if __name__ == '__main__':
         create_room(arguments['<room_type>'], arguments['<room_name>'])
     if arguments['add_person']:
         add_person(arguments['<first_name>'], arguments['<last_name>'], arguments['<person_type>'], arguments['<wants_accommodation>'])
+    if arguments['print_room']:
+        print_room(arguments['<room_name>'])
