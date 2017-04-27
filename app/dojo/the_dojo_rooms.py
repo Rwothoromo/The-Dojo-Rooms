@@ -86,7 +86,7 @@ class Dojo(object):
                     # new_livingspace = LivingSpaces(livingspace_name=room)
                     # session.add(new_livingspace)
                     # session.commit()
-                    print("An {} called {} has been successfully created!".format(room_type.lower(), room))
+                    print("A {} called {} has been successfully created!".format(room_type.lower(), room))
 
         new_room_count = len(self.all_rooms)
         room_increment = new_room_count - initial_room_count
@@ -144,12 +144,14 @@ class Dojo(object):
         random_office = random.choice([room for room in self.unallocated_rooms.values() if isinstance(room, Office)])
         random_office.add_occupant(person)
         print("{} has been allocated the office {}.".format(first_name, random_office.room_name))
+        return True
 
     def allocate_livingspace(self, person):
         first_name = person.person_name.split(' ')[0]
         random_livingspace = random.choice([room for room in self.unallocated_rooms.values() if isinstance(room, LivingSpace)])
         random_livingspace.add_occupant(person)
         print("{} has been allocated the livingspace {}.".format(first_name, random_livingspace.room_name))
+        return True
 
     def returncheck_room_allocations(self):
         self.allocated_rooms = []
@@ -160,6 +162,7 @@ class Dojo(object):
                 self.unallocated_rooms[room] = self.all_rooms[room]
             else:
                 self.allocated_rooms[room] = self.all_rooms[room]
+        return True
 
     # Prints the names of all the people in a specified room, onto the screen.
     def print_room(self, room_name):

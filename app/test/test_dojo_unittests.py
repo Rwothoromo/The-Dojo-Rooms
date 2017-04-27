@@ -55,15 +55,33 @@ class TestDojo(unittest.TestCase):
         multiple_rooms_type = "office"
         multiple_offices = dojo.create_room(multiple_rooms_type, multiple_rooms)
 
+        multiple_livingspaces = dojo.create_room("livingspace", ["Python", "Django"])
+
         person_name1 = "Eli1 Rwt1"
         person_type1 = "STAFF"
         add_person1 = dojo.add_person(person_name1, person_type1)
+
+        person_name2 = "Eli2 Rwt2"
+        person_type2 = "FELLOW"
+        add_person2 = dojo.add_person(person_name2, person_type2, 'Y')
+
+        person_name3 = "Eli3 Rwt3"
+        person_type3 = "FELLOW"
+        add_person3 = dojo.add_person(person_name3, person_type3, 'N')
+
+        person_name4 = "Eli4 Rwt4"
+        person_type4 = "FELLOW"
+        add_person4 = dojo.add_person(person_name4, person_type4, 'Y')
+
+        person_name5 = "Eli5 Rwt5"
+        person_type5 = "STAFF"
+        add_person5 = dojo.add_person(person_name5, person_type5)
 
         room_name1 = "Blue"
         rooms_print1 = dojo.print_room(room_name1)
         self.assertTrue(rooms_print1)
 
-        room_name2 = "Green" #empty room
+        room_name2 = "Green"
         rooms_print2 = dojo.print_room(room_name2)
         self.assertTrue(rooms_print2)
 
@@ -73,6 +91,10 @@ class TestDojo(unittest.TestCase):
 
         room_name4 = 4 #wrong value
         self.assertRaises(TypeError, dojo.print_room, room_name4)
+
+        room_name5 = "Orange"
+        rooms_print5 = dojo.print_room(room_name5)
+        self.assertTrue(rooms_print5)
 
 if __name__ == '__main__':
     unittest.main()
