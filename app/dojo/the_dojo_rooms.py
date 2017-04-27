@@ -119,7 +119,7 @@ class Dojo(object):
             if wants_accommodation.upper() != 'Y' and wants_accommodation.upper() != 'N':
                 raise ValueError("Person type 'FELLOW' must indicate 'Y' or 'N' for accomodation")
 
-            if wants_accommodation == 'N':
+            if wants_accommodation.upper() == 'N':
                 if not self.unallocated_rooms:
                     return "No Room space available"
 
@@ -129,7 +129,7 @@ class Dojo(object):
                 print("{} {} has been successfully added.".format(person_type.capitalize(), person_name))
                 return True
 
-            if wants_accommodation == 'Y':
+            if wants_accommodation.upper() == 'Y':
                 if not self.unallocated_rooms:
                     return "No Room space available"
 
