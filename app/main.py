@@ -78,7 +78,7 @@ class TheDojoRooms (cmd.Cmd):
     def do_print_room(self, arg):
         """Usage: print_room <room_name>"""
         room_name = arg["<room_name>"]
-        dojo.print_room([room_name])
+        dojo.print_room(room_name)
 
     # print_allocations is used to print a list of allocations onto the screen.
     @docopt_cmd
