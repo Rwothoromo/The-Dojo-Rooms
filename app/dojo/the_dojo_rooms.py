@@ -9,6 +9,7 @@ class Dojo(object):
         self.allocated_rooms = []
         self.unallocated_rooms = []
         self.all_persons = {}
+        self.allocated_persons = []
 
     # Creates rooms in the Dojo.
     def create_room(self, room_type, room_name):
@@ -110,7 +111,9 @@ class Dojo(object):
         else:
             random_office = random.choice(offices_available)
             random_office.add_occupant(person)
+            self.allocated_persons.append(person.person_name)
             self.all_rooms[random_office.room_name] = random_office
+            self.all_persons[person.person_name] = person
             print("{} has been allocated the office {}.".format(first_name, random_office.room_name))
             return True
 
@@ -125,7 +128,9 @@ class Dojo(object):
         else:
             random_livingspace = random.choice(livingspaces_available)
             random_livingspace.add_occupant(person)
+            self.allocated_persons.append(person.person_name)
             self.all_rooms[random_livingspace.room_name] = random_livingspace
+            self.all_persons[person.person_name] = person
             print("{} has been allocated the livingspace {}.".format(first_name, random_livingspace.room_name))
             return True
 
@@ -158,9 +163,9 @@ class Dojo(object):
                 ouput_file = open(filename, 'w')
 
         for room in self.allocated_rooms:
-            print(room.room_name.upper(), '\n', '-'*30)
+            print('{}\n{}'.format(room.room_name.upper(), '-'*30))
             if write_to_file:
-                ouput_file.write(room.room_name.upper()+'\n'+'-'*30)
+                ouput_file.write('{}\n{}'.format(room.room_name.upper(), '-'*30))
 
             for room_occupant in room.occupants:
                 print("\nMEMBER {},".format(room_occupant.person_name))
@@ -176,7 +181,7 @@ class Dojo(object):
 
     # Prints a list of unallocated people to the screen.
     def print_unallocated(self, filename=None):
-        unallocated_persons = [person.person_name for person in self.all_persons.values() if person not in self.all_rooms.values()]
+        unallocated_persons = [person for person in self.all_persons.keys() if person not in self.allocated_persons]
         if not unallocated_persons:
             print("No Person is unallocated!")
 
