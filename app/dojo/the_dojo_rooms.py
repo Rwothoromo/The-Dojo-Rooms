@@ -66,6 +66,8 @@ class Dojo(object):
             person_name_capitalized = ' '.join([name.capitalize() for name in person_name.lower().split()])
             if not wants_accommodation:
                 staff = Staff(person_name_capitalized)
+
+                # append person object to all_persons list
                 self.all_persons[person_name_capitalized] = staff
                 print("{} {} has been successfully added.".format(person_type.lower().capitalize(), person_name_capitalized))
                 self.allocate_office(staff)
@@ -86,6 +88,8 @@ class Dojo(object):
             if wants_accommodation.upper() == 'N':
                 person_name_capitalized = ' '.join([name.capitalize() for name in person_name.lower().split()])
                 fellow = Fellow(person_name_capitalized)
+
+                # append person object to all_persons list
                 self.all_persons[person_name_capitalized] = fellow
                 print("{} {} has been successfully added.".format(person_type.lower().capitalize(), person_name_capitalized))
                 self.allocate_office(fellow)
@@ -94,6 +98,8 @@ class Dojo(object):
             if wants_accommodation.upper() == 'Y':
                 person_name_capitalized = ' '.join([name.capitalize() for name in person_name.lower().split()])
                 fellow = Fellow(person_name_capitalized)
+
+                # append person object to all_persons list
                 self.all_persons[person_name_capitalized] = fellow
                 print("{} {} has been successfully added.".format(person_type.lower().capitalize(), person_name_capitalized))
                 self.allocate_office(fellow)
@@ -109,10 +115,19 @@ class Dojo(object):
             print("No Office space available")
             return False
         else:
+            # select a random room object
             random_office = random.choice(offices_available)
+
+            # assign a person a Dojo room
             random_office.add_occupant(person)
+
+            # append person name to list of persons allocated rooms
             self.allocated_persons.append(person.person_name)
+
+            # append office name to dictionary of rooms
             self.all_rooms[random_office.room_name] = random_office
+
+            # append person name to dictionary of persons in the Dojo
             self.all_persons[person.person_name] = person
             print("{} has been allocated the office {}.".format(first_name, random_office.room_name))
             return True
@@ -126,10 +141,19 @@ class Dojo(object):
             print("No Living space available")
             return False
         else:
+            # select a random room object
             random_livingspace = random.choice(livingspaces_available)
+
+            # assign a person a Dojo room
             random_livingspace.add_occupant(person)
+
+            # append person name to list of persons allocated rooms
             self.allocated_persons.append(person.person_name)
+
+            # append room name to dictionary of rooms in the Dojo
             self.all_rooms[random_livingspace.room_name] = random_livingspace
+
+            # append person name to dictionary of persons in the Dojo
             self.all_persons[person.person_name] = person
             print("{} has been allocated the livingspace {}.".format(first_name, random_livingspace.room_name))
             return True
@@ -142,6 +166,7 @@ class Dojo(object):
         if room_name not in self.all_rooms.keys():
             print("{} does not exist in rooms!".format(room_name))
 
+        # retrieve list or person objects from all Dojo rooms
         room_occupants = self.all_rooms[room_name].occupants
         for individual in room_occupants:
             print('{}\n'.format(individual.person_name))
@@ -162,11 +187,13 @@ class Dojo(object):
                 write_to_file = True
                 ouput_file = open(filename, 'w')
 
+        # search the rooms with occupants, for room names and occupant names
         for room in self.allocated_rooms:
             print('{}\n{}'.format(room.room_name.upper(), '-'*30))
             if write_to_file:
                 ouput_file.write('{}\n{}'.format(room.room_name.upper(), '-'*30))
 
+            # search for occupant names in list of room occupant(person) objects
             for room_occupant in room.occupants:
                 print("\nMEMBER {},".format(room_occupant.person_name))
                 if write_to_file:
@@ -181,6 +208,7 @@ class Dojo(object):
 
     # Prints a list of unallocated people to the screen.
     def print_unallocated(self, filename=None):
+        # retrieve list of person objects that are not assigned rooms in the Dojo
         unallocated_persons = [person for person in self.all_persons.keys() if person not in self.allocated_persons]
         if not unallocated_persons:
             print("No Person is unallocated!")
@@ -194,6 +222,7 @@ class Dojo(object):
                 write_to_file = True
                 ouput_file = open(filename, 'w')
 
+        # retrieve names of persons without rooms
         for individual in unallocated_persons:
             print("\nMEMBER {},".format(individual))
             if write_to_file:
