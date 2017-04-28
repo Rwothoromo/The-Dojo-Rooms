@@ -1,0 +1,5 @@
+BLUE
+------------------------------[<dojo.persons.Staff object at 0x0000000004A9B3C8>, <dojo.persons.Fellow object at 0x0000000004A9B390>]
+MEMBER ,
+MEMBER ,
+

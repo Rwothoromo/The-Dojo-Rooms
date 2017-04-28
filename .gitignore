@@ -4,7 +4,7 @@ app/.cache
 app/dojo/__init__.pyc
 app/dojo/__pycache__/persons.cpython-36.pyc
 app/dojo/__pycache__/rooms.cpython-36.pyc
-app/dojo/dojo_declarative_sqlalchemy.py
+app/dojo/dojo_declarative_sqlalchemy.pyc
 app/dojo/persons.pyc
 app/dojo/rooms.pyc
 app/dojo/the_dojo_rooms.pyc

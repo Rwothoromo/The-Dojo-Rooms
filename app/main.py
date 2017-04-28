@@ -5,6 +5,7 @@ Usage:
   TheDojoRooms add_person <first_name> <last_name> <person_type> [<wants_accommodation>]
   TheDojoRooms print_room <room_name>
   TheDojoRooms print_allocations [<filename>]
+  TheDojoRooms print_unallocated [<filename>]
   TheDojoRooms
   TheDojoRooms (-h | --help)
 
@@ -82,9 +83,16 @@ class TheDojoRooms (cmd.Cmd):
     # print_allocations is used to print a list of allocations onto the screen.
     @docopt_cmd
     def do_print_allocations(self, arg):
-        """Usage: print_room <room_name>"""
+        """Usage: print_allocations [<filename>]"""
         filename = arg["<filename>"]
         dojo.print_allocations(filename)
+
+    # print_unallocated is used to print a list of people without room allocations, onto the screen.
+    @docopt_cmd
+    def do_print_unallocated(self, arg):
+        """Usage: print_unallocated [<filename>]"""
+        filename = arg["<filename>"]
+        dojo.print_unallocated(filename)
 
     def do_quit(self, arg):
             """Quits out of Interactive Mode."""
