@@ -144,7 +144,7 @@ class Dojo(object):
 
     # Prints a list of allocations onto the screen.
     def print_allocations(self, filename=None):
-        self.allocated_rooms = [room for room in self.all_rooms.values() if room.check_room_availability() and room.occupants]
+        self.allocated_rooms = [room for room in self.all_rooms.values() if room.occupants]
         if not self.allocated_rooms:
             print("No Rooms allocated!")
 
@@ -157,19 +157,15 @@ class Dojo(object):
                 write_to_file = True
                 ouput_file = open(filename, 'w')
 
-        for room in self.all_rooms.keys():
-            print(room.upper(), '\n', '-'*30)
+        for room in self.allocated_rooms:
+            print(room.room_name.upper(), '\n', '-'*30)
             if write_to_file:
-                ouput_file.write(room.upper()+'\n'+'-'*30)
+                ouput_file.write(room.room_name.upper()+'\n'+'-'*30)
 
-            room_occupants = self.all_rooms[room].occupants
-            if write_to_file:
-                ouput_file.write(str(room_occupants))
-
-            for room_occupant in room_occupants:
-                print("\nMEMBER ,".format(room_occupant.person_name))
+            for room_occupant in room.occupants:
+                print("\nMEMBER {},".format(room_occupant.person_name))
                 if write_to_file:
-                    ouput_file.write("\nMEMBER ,".format(room_occupant.person_name))
+                    ouput_file.write("\nMEMBER {},".format(room_occupant.person_name))
             print('\n\n')
             if write_to_file:
                 ouput_file.write('\n\n')
@@ -194,12 +190,9 @@ class Dojo(object):
                 ouput_file = open(filename, 'w')
 
         for individual in unallocated_persons:
-            print("\nMEMBER ,".format(individual))
+            print("\nMEMBER {},".format(individual))
             if write_to_file:
-                ouput_file.write("\nMEMBER ,".format(individual))
-            print('\n\n')
-            if write_to_file:
-                ouput_file.write('\n\n')
+                ouput_file.write("\nMEMBER {},".format(individual))
         if write_to_file:
             ouput_file.close()
             return True

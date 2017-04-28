@@ -1,13 +1,15 @@
 class Person(object):
+    """
+    This class is used for creation of people.
+    It is the super class for Staff and Fellow classes
+    """
     def __init__(self, person_name):
         self.person_name = person_name
 
+# Office inherits from Room class
 class Staff(Person):
-    def __init__(self, person_name):
-        self.person_name = person_name
-        super(Staff, self).__init__(person_name)
+    pass
 
+# Office inherits from Room class
 class Fellow(Person):
-    def __init__(self, person_name):
-        self.person_name = person_name
-        super(Fellow, self).__init__(person_name)
+    pass
