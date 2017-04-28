@@ -139,7 +139,7 @@ class Dojo(object):
 
         room_occupants = self.all_rooms[room_name].occupants
         for individual in room_occupants:
-            print(individual.person_name, '\n')
+            print('{}\n'.format(individual.person_name))
         return True
 
     # Prints a list of allocations onto the screen.
