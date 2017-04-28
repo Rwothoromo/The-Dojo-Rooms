@@ -1,9 +1,8 @@
-from abc import ABCMeta
-
 class Room(object):
-    __metaclass__ = ABCMeta
-    max_occupants = 0
-
+    """
+    This class is used for creation of rooms.
+    It is the super class for Office and LivingSpace classes
+    """
     def __init__(self, room_name):
         self.room_name = room_name
         self.occupants = []
@@ -18,8 +17,14 @@ class Room(object):
         else:
             return False
 
+# Office inherits from Room class
 class Office(Room):
-    max_occupants = 6
+    def __init__(self, room_name):
+        self.max_occupants = 6
+        super(Office, self).__init__(room_name)
 
+# LivingSpace inherits from Room class
 class LivingSpace(Room):
-    max_occupants = 4
+    def __init__(self, room_name):
+        self.max_occupants = 4
+        super(LivingSpace, self).__init__(room_name)

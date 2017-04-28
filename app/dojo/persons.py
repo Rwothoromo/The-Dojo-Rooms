@@ -1,14 +1,15 @@
-from abc import ABCMeta
-
 class Person(object):
-    __metaclass__ = ABCMeta
-    person_type = ''
-
+    """
+    This class is used for creation of people.
+    It is the super class for Staff and Fellow classes
+    """
     def __init__(self, person_name):
         self.person_name = person_name
 
+# Office inherits from Room class
 class Staff(Person):
-    person_type = 'STAFF'
+    pass
 
+# Office inherits from Room class
 class Fellow(Person):
-    person_type = 'FELLOW'
+    pass
