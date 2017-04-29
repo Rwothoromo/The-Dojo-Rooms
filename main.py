@@ -1,27 +1,30 @@
 #!/usr/bin/env python
-"""
+"""The Dojo Rooms
+
 Usage:
-  TheDojoRooms create_room <room_type> <room_name>...
-  TheDojoRooms add_person <first_name> <last_name> <person_type> [<wants_accommodation>]
-  TheDojoRooms print_room <room_name>
-  TheDojoRooms print_allocations [<filename>]
-  TheDojoRooms print_unallocated [<filename>]
-  TheDojoRooms
-  TheDojoRooms (-h | --help)
+  main.py create_room <room_type> <room_name>...
+  main.py add_person <first_name> <last_name> <person_type> [<wants_accommodation>]
+  main.py print_room <room_name>
+  main.py print_allocations [<filename>]
+  main.py print_unallocated [<filename>]
+  main.py
+  main.py (-h | --help | --version)
 
 Options:
-  -i --interactive Interactive Mode
-  -h --help     Show this screen.
+  -i, --interactive Interactive Mode
+  -h, --help  Show this screen and exit.
+  --o=<filename>  Filename to save output
+  --db=sqlite_database
 
 """
 
 import sys
 import cmd
-from docopt import docopt
-from dojo.the_dojo_rooms import Dojo
+from docopt import docopt, DocoptExit
+from app.dojo.the_dojo_rooms import Dojo
 
 dojo = Dojo()
-
+# Citation: Source https://github.com/docopt/docopt/blob/master/examples/interactive_example.py
 def docopt_cmd(func):
     """
     This decorator is used to simplify the try/except block and pass the result
@@ -48,12 +51,13 @@ def docopt_cmd(func):
     fn.__doc__ = func.__doc__
     fn.__dict__.update(func.__dict__)
     return fn
+# End of Citation
 
-class TheDojoRooms (cmd.Cmd):
-    intro = 'Welcome to The Dojo Rooms!' \
-        + ' Product by Rwothoromo Elijah (www.github.com/Rwothoromo)' \
-        + ' (type help for a list of commands.)'
-    prompt = '(TheDojoRooms) '
+class TheDojoRooms(cmd.Cmd):
+    intro = '\n\tWelcome to The Dojo Rooms!\n' \
+        + '\tProduct by Rwothoromo Elijah (www.github.com/Rwothoromo)\n' \
+        + '\t(type help for a list of commands.)\n'
+    prompt = 'The Dojo Rooms: '
     file = None
 
     # create_room() is used to create rooms in The Dojo Rooms
@@ -95,9 +99,9 @@ class TheDojoRooms (cmd.Cmd):
         dojo.print_unallocated(filename)
 
     def do_quit(self, arg):
-            """Quits out of Interactive Mode."""
-            print('Thank you for stopping by!')
-            exit()
+        """Quits out of Interactive Mode."""
+        print('Thank you for stopping by!')
+        exit()
 
 opt = docopt(__doc__, sys.argv[1:])
 TheDojoRooms().cmdloop()
