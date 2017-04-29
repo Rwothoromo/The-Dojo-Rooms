@@ -1,5 +1,6 @@
 #!/usr/bin/env python
-"""
+"""The Dojo Rooms
+
 Usage:
   main.py create_room <room_type> <room_name>...
   main.py add_person <first_name> <last_name> <person_type> [<wants_accommodation>]
@@ -103,5 +104,4 @@ class TheDojoRooms(cmd.Cmd):
         exit()
 
 opt = docopt(__doc__, sys.argv[1:])
-if opt['--interactive'] or opt['-i']:
-    TheDojoRooms().cmdloop()
+TheDojoRooms().cmdloop()

@@ -1,7 +1,16 @@
+#-*- coding: utf-8-*-
+"""
+This module runs tests on the functionality of the_dojo_rooms.py.
+"""
+
 import unittest
 from app.dojo.the_dojo_rooms import Dojo
 
 class TestDojo(unittest.TestCase):
+    """
+    This class is used for testing functionality based on the unittests module.
+    """
+
     def setUp(self):
         self.dojo = Dojo()
         self.initial_room_count = len(self.dojo.all_rooms)
