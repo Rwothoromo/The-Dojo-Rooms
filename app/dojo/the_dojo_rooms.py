@@ -1,6 +1,6 @@
 from persons import Fellow, Staff
 from rooms import Office, LivingSpace
-from dojo_declarative_sqlalchemy import *
+from dojo_declarative_sqlalchemy import DojoState
 import random
 
 class Dojo(object):
@@ -108,7 +108,7 @@ class Dojo(object):
 
     # assign an Office to a person
     def allocate_office(self, person):
-        first_name = person.person_name.split(' ')[0]
+        first_name = person.name.split(' ')[0]
         offices_available = [room for room in self.all_rooms.values() if isinstance(room, Office) and room.check_room_availability()]
 
         if not offices_available:
@@ -122,19 +122,19 @@ class Dojo(object):
             random_office.add_occupant(person)
 
             # append person name to list of persons allocated rooms
-            self.allocated_persons.append(person.person_name)
+            self.allocated_persons.append(person.name)
 
             # append office name to dictionary of rooms
-            self.all_rooms[random_office.room_name] = random_office
+            self.all_rooms[random_office.name] = random_office
 
             # append person name to dictionary of persons in the Dojo
-            self.all_persons[person.person_name] = person
-            print("{} has been allocated the office {}.".format(first_name, random_office.room_name))
+            self.all_persons[person.name] = person
+            print("{} has been allocated the office {}.".format(first_name, random_office.name))
             return True
 
     # assign a LivingSpace to a person
     def allocate_livingspace(self, person):
-        first_name = person.person_name.split(' ')[0]
+        first_name = person.name.split(' ')[0]
         livingspaces_available = [room for room in self.all_rooms.values() if isinstance(room, LivingSpace) and room.check_room_availability()]
 
         if not livingspaces_available:
@@ -148,14 +148,14 @@ class Dojo(object):
             random_livingspace.add_occupant(person)
 
             # append person name to list of persons allocated rooms
-            self.allocated_persons.append(person.person_name)
+            self.allocated_persons.append(person.name)
 
             # append room name to dictionary of rooms in the Dojo
-            self.all_rooms[random_livingspace.room_name] = random_livingspace
+            self.all_rooms[random_livingspace.name] = random_livingspace
 
             # append person name to dictionary of persons in the Dojo
-            self.all_persons[person.person_name] = person
-            print("{} has been allocated the livingspace {}.".format(first_name, random_livingspace.room_name))
+            self.all_persons[person.name] = person
+            print("{} has been allocated the livingspace {}.".format(first_name, random_livingspace.name))
             return True
 
     # Prints the names of all the people in a specified room, onto the screen.
@@ -169,7 +169,7 @@ class Dojo(object):
         # retrieve list or person objects from all Dojo rooms
         room_occupants = self.all_rooms[room_name].occupants
         for individual in room_occupants:
-            print('{}\n'.format(individual.person_name))
+            print('{}\n'.format(individual.name))
         return True
 
     # Prints a list of allocations onto the screen.
@@ -189,15 +189,15 @@ class Dojo(object):
 
         # search the rooms with occupants, for room names and occupant names
         for room in self.allocated_rooms:
-            print('{}\n{}'.format(room.room_name.upper(), '-'*30))
+            print('{}\n{}'.format(room.name.upper(), '-'*30))
             if write_to_file:
-                ouput_file.write('{}\n{}'.format(room.room_name.upper(), '-'*30))
+                ouput_file.write('{}\n{}'.format(room.name.upper(), '-'*30))
 
             # search for occupant names in list of room occupant(person) objects
             for room_occupant in room.occupants:
-                print("\nMEMBER {},".format(room_occupant.person_name))
+                print("\nMEMBER {},".format(room_occupant.name))
                 if write_to_file:
-                    ouput_file.write("\nMEMBER {},".format(room_occupant.person_name))
+                    ouput_file.write("\nMEMBER {},".format(room_occupant.name))
             print('\n\n')
             if write_to_file:
                 ouput_file.write('\n\n')

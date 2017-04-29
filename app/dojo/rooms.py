@@ -3,8 +3,8 @@ class Room(object):
     This class is used for creation of rooms.
     It is the super class for Office and LivingSpace classes
     """
-    def __init__(self, room_name):
-        self.room_name = room_name
+    def __init__(self, name):
+        self.name = name
         self.occupants = []
 
     def check_room_availability(self):
@@ -19,12 +19,12 @@ class Room(object):
 
 # Office inherits from Room class
 class Office(Room):
-    def __init__(self, room_name):
+    def __init__(self, name):
         self.max_occupants = 6
-        super(Office, self).__init__(room_name)
+        super(Office, self).__init__(name)
 
 # LivingSpace inherits from Room class
 class LivingSpace(Room):
-    def __init__(self, room_name):
+    def __init__(self, name):
         self.max_occupants = 4
-        super(LivingSpace, self).__init__(room_name)
+        super(LivingSpace, self).__init__(name)

@@ -1,13 +1,10 @@
 import unittest
-from dojo.the_dojo_rooms import *
+from app.dojo.the_dojo_rooms import Dojo
 
 class TestDojo(unittest.TestCase):
     def setUp(self):
         self.dojo = Dojo()
         self.initial_room_count = len(self.dojo.all_rooms)
-
-        self.multiple_offices = ["Blue", "Green", "Orange"]
-        self.multiple_livingspaces = ["Homer", "Away"]
 
         self.person_name1 = "Eli1 Rwt1"
         self.person_type1 = "STAFF"
@@ -35,7 +32,7 @@ class TestDojo(unittest.TestCase):
         self.assertEqual(new_room_count - self.initial_room_count, 1)
 
     def test_create_multiple_rooms_successfully(self):
-        room_increment = self.dojo.create_room("office", self.multiple_offices)
+        room_increment = self.dojo.create_room("office", ["Blue", "Green", "Orange"])
         self.assertTrue(room_increment)
 
         new_room_count = len(self.dojo.all_rooms)
@@ -54,8 +51,8 @@ class TestDojo(unittest.TestCase):
             add_room = self.dojo.create_room("other", ["Blue"])
 
     def test_add_person_successfully(self):
-        self.dojo.create_room("office", self.multiple_offices)
-        self.dojo.create_room("livingspace", self.multiple_livingspaces)
+        # self.dojo.create_room("office", ["Blue", "Green", "Orange"])
+        # self.dojo.create_room("livingspace", ["Purple", "Pink"])
 
         add_person1 = self.dojo.add_person(self.person_name1, self.person_type1)
         self.assertTrue(add_person1)
@@ -106,8 +103,8 @@ class TestDojo(unittest.TestCase):
         self.assertRaises(KeyError, self.dojo.print_room, "Unknown")
 
     def test_print_allocations_successfully(self):
-        self.dojo.create_room("office", self.multiple_offices)
-        self.dojo.create_room("livingspace", self.multiple_livingspaces)
+        # self.dojo.create_room("office", ["Blue", "Green", "Orange"])
+        # self.dojo.create_room("livingspace", ["Purple", "Pink"])
 
         add_person1 = self.dojo.add_person(self.person_name1, self.person_type1)
         add_person2 = self.dojo.add_person(self.person_name2, self.person_type2, 'Y')

@@ -1,5 +1,5 @@
 # The_Dojo_Rooms
-==============
+================
 
 This system will be used to automatically allocate spaces to people at random, at The Dojo, one of Andela Kenya’s facilities.
 
@@ -12,14 +12,14 @@ It also provides a basis for a later database design/structure.
 Docopt
 ======
 Run the command:
-python app/main.py
+python main.py
 
 to test The Dojo Rooms functionality.
 
 Unittests
 =========
 Run the command:
-pytest app/test/test_dojo_unittests.py
+pytest app/test/test_dojo.py
 
 to run unittests on The Dojo Rooms functionality.
 
