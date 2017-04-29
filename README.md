@@ -16,7 +16,7 @@ This system will be used to automatically allocate spaces to people at random, a
 * Install [virtualenv](http://docs.python-guide.org/en/latest/dev/virtualenvs/)
 
 **Setup**
-* Open command prompt and change directory to your select directory e.g. cd d:
+* Open command prompt and change directory to your select directory e.g. `cd d:`
 * Create a virtualenv e.g. virtualenv venv
 * Activate it venv\Scripts\activate.bat
 * Run `git clone` for this repository and `cd` into the project root.
