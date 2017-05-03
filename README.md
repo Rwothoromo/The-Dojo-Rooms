@@ -19,8 +19,10 @@ This system will be used to automatically allocate spaces to people at random, a
 * Open command prompt and change directory to your select directory e.g. cd d:
 * Create a virtualenv e.g. virtualenv venv
 * Activate it venv\Scripts\activate.bat
-* Run `git clone` for this repository and `cd` into the project root.
-* Run `python main.py`
+* Run `git clone` for this repository on git bash and `cd` into the project root.
+* Run `pip install docopt` on command prompt
+* Run `pip install sqlalchemy` on command prompt
+* Run `python main.py` on command prompt
 * You will see a prompt, `The Dojo Rooms: `
 * Fully setup!
 
