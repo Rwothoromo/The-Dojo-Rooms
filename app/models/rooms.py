@@ -10,10 +10,10 @@ class Room(object):
     It is the super class for Office and LivingSpace classes
     """
 
-    def __init__(self, name):
+    def __init__(self, name, max_occupants):
         self.name = name
         self.occupants = []
-        self.max_occupants = 0
+        self.max_occupants = max_occupants
 
     def check_room_availability(self):
         """check if the room has space for another occupant"""
@@ -31,10 +31,10 @@ class Office(Room):
     """Office inherits from Room class"""
     def __init__(self, name):
         self.max_occupants = 6
-        super(Office, self).__init__(name)
+        super(Office, self).__init__(name, self.max_occupants)
 
 class LivingSpace(Room):
     """LivingSpace inherits from Room class"""
     def __init__(self, name):
         self.max_occupants = 4
-        super(LivingSpace, self).__init__(name)
+        super(LivingSpace, self).__init__(name, self.max_occupants)
