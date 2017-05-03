@@ -3,9 +3,8 @@
 This module contains the classes used for creating a person in the Dojo.
 """
 import random
-from app.dojo.persons import Fellow, Staff
-from app.dojo.rooms import Office, LivingSpace
-# from app.dojo.dojo_declarative_sqlalchemy import DojoState
+from app.models.persons import Fellow, Staff
+from app.models.rooms import Office, LivingSpace
 
 
 class Dojo(object):
