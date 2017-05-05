@@ -14,6 +14,7 @@ class TestDojo(unittest.TestCase):
     def setUp(self):
         self.dojo = Dojo()
         self.initial_room_count = len(self.dojo.all_rooms)
+        self.initial_person_count = len(self.dojo.all_persons)
 
         self.person_name1 = "Eli1 Rwt1"
         self.person_type1 = "STAFF"
@@ -40,10 +41,23 @@ class TestDojo(unittest.TestCase):
         new_room_count = len(self.dojo.all_rooms)
         self.assertEqual(new_room_count - self.initial_room_count, 1)
 
-    def test_create_multiple_rooms_successfully(self):
-        room_increment = self.dojo.create_room("office", ["Blue", "Green", "Orange"])
-        self.assertTrue(room_increment)
+    def test_create_room_adds_office_successfully(self):
+        self.dojo.create_room("office", ["White"])
+        self.assertIn("White", self.dojo.all_rooms.keys())
+        self.assertEqual(self.dojo.all_rooms["White"].max_occupants, 6)
 
+    def test_create_room_adds_livingspace_successfully(self):
+        self.dojo.create_room("livingspace", ["Maroon"])
+        self.assertIn("Maroon", self.dojo.all_rooms.keys())
+        self.assertEqual(self.dojo.all_rooms["Maroon"].max_occupants, 4)
+
+    def test_create_multiple_offices_successfully(self):
+        room_increment = self.dojo.create_room("office", ["Blue", "Green", "Orange"])
+        new_room_count = len(self.dojo.all_rooms)
+        self.assertEqual(new_room_count - self.initial_room_count, room_increment)
+
+    def test_create_multiple_livingspaces_successfully(self):
+        room_increment = self.dojo.create_room("livingspace", ["D5", "D7"])
         new_room_count = len(self.dojo.all_rooms)
         self.assertEqual(new_room_count - self.initial_room_count, room_increment)
 
@@ -60,14 +74,21 @@ class TestDojo(unittest.TestCase):
             add_room = self.dojo.create_room("other", ["Blue"])
 
     def test_add_person_successfully(self):
-        # self.dojo.create_room("office", ["Blue", "Green", "Orange"])
-        # self.dojo.create_room("livingspace", ["Purple", "Pink"])
+        person_increment = self.dojo.add_person(self.person_name1, self.person_type1)
+        self.assertTrue(person_increment)
 
-        add_person1 = self.dojo.add_person(self.person_name1, self.person_type1)
-        self.assertTrue(add_person1)
+        new_person_count = len(self.dojo.all_persons)
+        self.assertEqual(new_person_count - self.initial_person_count, 1)
 
-        add_person2 = self.dojo.add_person(self.person_name2, self.person_type2, 'Y')
-        self.assertTrue(add_person2)
+    def test_add_person_adds_fellow_successfully(self):
+        self.dojo.add_person(self.person_name2, self.person_type2, 'Y')
+        self.assertIn(self.person_name2, self.dojo.all_persons.keys())
+        self.assertEqual(self.dojo.all_persons[self.person_name2].type, "FELLOW")
+
+    def test_add_person_adds_staff_successfully(self):
+        self.dojo.add_person(self.person_name1, self.person_type1)
+        self.assertIn(self.person_name1, self.dojo.all_persons.keys())
+        self.assertEqual(self.dojo.all_persons[self.person_name1].type, "STAFF")
 
     def test_add_person_raises_errors_if_wrong_person_type_argument(self):
         self.dojo.create_room("office", ["White"])
@@ -89,6 +110,65 @@ class TestDojo(unittest.TestCase):
         add_person1 = self.dojo.add_person(self.person_name1, self.person_type1)
         with self.assertRaises(ValueError):
             add_person1 = self.dojo.add_person(self.person_name1, self.person_type1)
+
+    def test_person_is_assigned_office_on_add_person_if_office_present(self):
+        room_occupants_names = []
+        self.dojo.create_room("office", ["White"])
+        self.dojo.add_person(self.person_name1, self.person_type1)
+
+        room_occupants_names = []
+        room_occupants = []
+
+        for room in self.dojo.all_rooms.values():
+            room_occupants += room.occupants
+
+        for individual in room_occupants:
+            room_occupants_names.append(individual.name)
+
+        self.assertIn(self.person_name1, room_occupants_names)
+
+    def test_person_is_not_assigned_office_on_add_person_if_office_not_available(self):
+        room_occupants_names = []
+        self.dojo.add_person(self.person_name1, self.person_type1)
+
+        room_occupants = []
+
+        for room in self.dojo.all_rooms.values():
+            room_occupants += room.occupants
+
+        for individual in room_occupants:
+            room_occupants_names.append(individual.name)
+
+        self.assertNotIn(self.person_name1, room_occupants_names)
+
+    def test_fellow_is_assigned_livingspace_on_add_person_if_livingspace_present(self):
+        room_occupants_names = []
+        self.dojo.create_room("livingspace", ["Homely"])
+        self.dojo.add_person(self.person_name2, self.person_type2, 'Y')
+
+        room_occupants = []
+
+        for room in self.dojo.all_rooms.values():
+            room_occupants += room.occupants
+
+        for individual in room_occupants:
+            room_occupants_names.append(individual.name)
+
+        self.assertIn(self.person_name2, room_occupants_names)
+
+    def test_fellow_is_not_assigned_livingspace_on_add_person_if_livingspace_not_available(self):
+        room_occupants_names = []
+        self.dojo.add_person(self.person_name2, self.person_type2, 'Y')
+
+        room_occupants = []
+
+        for room in self.dojo.all_rooms.values():
+            room_occupants += room.occupants
+
+        for individual in room_occupants:
+            room_occupants_names.append(individual.name)
+
+        self.assertNotIn(self.person_name2, room_occupants_names)
 
     def test_print_room_successfully(self):
         self.dojo.create_room("office", ["Blue"])
