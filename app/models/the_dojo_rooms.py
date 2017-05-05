@@ -65,6 +65,9 @@ class Dojo(object):
     def add_person(self, person_name, person_type, wants_accommodation=None):
         """Adds a person to the Dojo and assigns them a random room."""
 
+        initial_person_count = len(self.all_persons)
+        person_increment = 0
+
         if not isinstance(person_name, str):
             raise AttributeError("Person name must be a string")
 
@@ -83,7 +86,6 @@ class Dojo(object):
                 self.all_persons[person_name] = staff
                 print("{} {} has been successfully added.".format(staff.type, staff.name))
                 self.allocate_office(staff)
-                return True
             else:
                 raise AttributeError("Staff cannot seek accomodation")
 
@@ -105,7 +107,6 @@ class Dojo(object):
                 self.all_persons[person_name] = fellow
                 print("{} {} has been successfully added.".format(fellow.type, fellow.name))
                 self.allocate_office(fellow)
-                return True
 
             if wants_accommodation.upper() == 'Y':
                 person_name = ' '.join([name.capitalize() for name in person_name.lower().split()])
@@ -116,7 +117,10 @@ class Dojo(object):
                 print("{} {} has been successfully added.".format(fellow.type, fellow.name))
                 self.allocate_office(fellow)
                 self.allocate_livingspace(fellow)
-                return True
+                
+        new_person_count = len(self.all_persons)
+        person_increment = new_person_count - initial_person_count
+        return person_increment
 
     def allocate_office(self, person):
         """assign an office to a person"""
@@ -188,7 +192,7 @@ class Dojo(object):
         room_occupants = self.all_rooms[room_name].occupants
         for individual in room_occupants:
             print('{}\n'.format(individual.name))
-        return True
+        return room_occupants
 
     def print_allocations(self, filename=None):
         """Prints a list of allocations onto the screen."""
