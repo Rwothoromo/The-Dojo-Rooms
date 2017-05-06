@@ -399,20 +399,19 @@ class Dojo(object):
                 used_file = filename
 
             for person in contents_list:
-                if len(person) < 3:
-                    pass
+                person = person.split(' ')
+                if len(person) > 2:
+                    person_name = person[0].lower().capitalize() + ' ' \
+                                        + person[1].lower().capitalize()
+                    person_type = person[2].upper()
 
-                person_name = person[0].lower().capitalize() + ' ' \
-                                    + person[1].lower().capitalize()
-                person_type = person[2].upper()
+                    if len(person) == 3:
+                        person_increment += self.add_person(person_name, person_type)
 
-                if len(person) == 3:
-                    person_increment += self.add_person(person_name, person_type)
-
-                if len(person) == 4:
-                    wants_accommodation = person[3].upper()
-                    person_increment += self.add_person(person_name, person_type, \
-                                                                wants_accommodation)
+                    if len(person) == 4:
+                        wants_accommodation = person[3].upper()
+                        person_increment += self.add_person(person_name, person_type, \
+                                                                    wants_accommodation)
             input_file.close()
 
         return (person_increment, used_file)
