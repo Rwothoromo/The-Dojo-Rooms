@@ -319,6 +319,8 @@ class Dojo(object):
         return len(livingspace_occupants) - initial_occupant_count
 
     def reallocate_person(self, person_name, room_name):
+        """Relocate relocate a person from one room to another."""
+
         if not isinstance(person_name, str):
             raise AttributeError("Person name must be a string")
 
@@ -370,9 +372,13 @@ class Dojo(object):
         return(old_room, new_room)
 
     def return_person_rooms(self, person):
+        """Return a list of room objects in which person is an occupant"""
         person_rooms = []
         for room in self.all_rooms.values():
             for room_occupant in room.occupants:
                 if room_occupant.name == person.name:
                     person_rooms.append(room)
         return person_rooms
+
+    def load_people(self, filename):
+        

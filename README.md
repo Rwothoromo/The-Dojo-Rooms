@@ -37,7 +37,7 @@ This system will be used to automatically allocate spaces to people at random, a
 Unittests
 =========
 Run the command:
-pytest app/test/test_dojo.py
+pytest app/test
 
 to run unittests on The Dojo Rooms.
 
@@ -70,3 +70,4 @@ Fellow Eli2 Rwt2 has been successfully added.
 6.  `print_room("Green")`
 7.  `print_allocations("room_allocations.txt")`
 8.  `print_unallocated("non_allocated.txt")`
+9.  `reallocate("Eli2 Rwt2", "Blue")`
