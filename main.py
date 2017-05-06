@@ -7,6 +7,7 @@ Usage:
   main.py print_room <room_name>
   main.py print_allocations [<filename>]
   main.py print_unallocated [<filename>]
+  main.py reallocate_person <first_name> <last_name> <room_name>
   main.py
   main.py (-h | --help | --version)
 
@@ -21,7 +22,7 @@ Options:
 import sys
 import cmd
 from docopt import docopt, DocoptExit
-from app.dojo.the_dojo_rooms import Dojo
+from app.models.the_dojo_rooms import Dojo
 
 dojo = Dojo()
 # Citation: Source https://github.com/docopt/docopt/blob/master/examples/interactive_example.py
@@ -60,7 +61,7 @@ class TheDojoRooms(cmd.Cmd):
     prompt = 'The Dojo Rooms: '
     file = None
 
-    # create_room() is used to create rooms in The Dojo Rooms
+    # create_room is used to create rooms in The Dojo Rooms
     @docopt_cmd
     def do_create_room(self, arg):
         """Usage: create_room <room_type> <room_name>..."""
@@ -68,7 +69,7 @@ class TheDojoRooms(cmd.Cmd):
         room_name = arg["<room_name>"]
         dojo.create_room(room_type, room_name)
 
-    # add_person() is used to add persons in The Dojo Rooms
+    # add_person is used to add persons in The Dojo Rooms
     @docopt_cmd
     def do_add_person(self, arg):
         """Usage: add_person <first_name> <last_name> <person_type> [<wants_accommodation>]"""
@@ -77,7 +78,7 @@ class TheDojoRooms(cmd.Cmd):
         wants_accommodation = arg["<wants_accommodation>"]
         dojo.add_person(person_name, person_type, wants_accommodation)
 
-    # print_room() is used to display the people in a given room
+    # print_room is used to display the people in a given room
     @docopt_cmd
     def do_print_room(self, arg):
         """Usage: print_room <room_name>"""
@@ -97,6 +98,14 @@ class TheDojoRooms(cmd.Cmd):
         """Usage: print_unallocated [<filename>]"""
         filename = arg["<filename>"]
         dojo.print_unallocated(filename)
+
+    # reallocate_person is used to reallocate a person from one room to another in The Dojo Rooms
+    @docopt_cmd
+    def do_reallocate_person(self, arg):
+        """Usage: reallocate_person <first_name> <last_name> <room_name>"""
+        person_name = str(arg["<first_name>"]) + ' ' + str(arg["<last_name>"])
+        room_name = arg["<room_name>"]
+        dojo.reallocate_person(person_name, room_name)
 
     def do_quit(self, arg):
         """Quits out of Interactive Mode."""

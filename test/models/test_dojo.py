@@ -35,7 +35,7 @@ class TestDojo(unittest.TestCase):
         self.person_type6 = "Other"
 
     def test_create_room_successfully(self):
-        room_increment = self.dojo.create_room("office", ["White"])
+        room_increment = self.dojo.create_room("office", ["White"])[0]
         self.assertTrue(room_increment)
 
         new_room_count = len(self.dojo.all_rooms)
@@ -52,26 +52,26 @@ class TestDojo(unittest.TestCase):
         self.assertEqual(self.dojo.all_rooms["Maroon"].max_occupants, 4)
 
     def test_create_multiple_offices_successfully(self):
-        room_increment = self.dojo.create_room("office", ["Blue", "Green", "Orange"])
+        room_increment = self.dojo.create_room("office", ["Blue", "Green", "Orange"])[0]
         new_room_count = len(self.dojo.all_rooms)
         self.assertEqual(new_room_count - self.initial_room_count, room_increment)
 
     def test_create_multiple_livingspaces_successfully(self):
-        room_increment = self.dojo.create_room("livingspace", ["D5", "D7"])
+        room_increment = self.dojo.create_room("livingspace", ["D5", "D7"])[0]
         new_room_count = len(self.dojo.all_rooms)
         self.assertEqual(new_room_count - self.initial_room_count, room_increment)
 
     def test_create_room_raises_errors_if_wrong_room_name_argument(self):
         with self.assertRaises(AttributeError):
-            add_room = self.dojo.create_room("office", 4)
+            self.dojo.create_room("office", 4)
 
     def test_create_room_raises_errors_if_wrong_room_type_argument(self):
         with self.assertRaises(AttributeError):
-            add_room = self.dojo.create_room(4, "Blue")
+            self.dojo.create_room(4, "Blue")
 
     def test_create_room_raises_errors_if_incorrect_room_type_value(self):
         with self.assertRaises(ValueError):
-            add_room = self.dojo.create_room("other", ["Blue"])
+            self.dojo.create_room("other", ["Blue"])
 
     def test_add_person_successfully(self):
         person_increment = self.dojo.add_person(self.person_name1, self.person_type1)
@@ -93,12 +93,12 @@ class TestDojo(unittest.TestCase):
     def test_add_person_raises_errors_if_wrong_person_type_argument(self):
         self.dojo.create_room("office", ["White"])
         with self.assertRaises(AttributeError):
-            add_person1 = self.dojo.add_person(self.person_name1, 4)
+            self.dojo.add_person(self.person_name1, 4)
 
     def test_add_person_raises_errors_if_wrong_person_name_argument(self):
         self.dojo.create_room("office", ["White"])
         with self.assertRaises(AttributeError):
-            add_person1 = self.dojo.add_person(4, ["Blue"])
+            self.dojo.add_person(4, ["Blue"])
 
     def test_add_person_raises_errors_if_wrong_accomodation_argument(self):
         self.dojo.create_room("office", ["White"])
@@ -107,9 +107,24 @@ class TestDojo(unittest.TestCase):
 
     def test_add_person_raises_errors_if_person_already_exists(self):
         self.dojo.create_room("office", ["White"])
-        add_person1 = self.dojo.add_person(self.person_name1, self.person_type1)
+        self.dojo.add_person(self.person_name1, self.person_type1)
         with self.assertRaises(ValueError):
-            add_person1 = self.dojo.add_person(self.person_name1, self.person_type1)
+            self.dojo.add_person(self.person_name1, self.person_type1)
+
+    def test_create_room_auto_allocates_offices_to_non_allocated_persons(self):
+        self.dojo.add_person(self.person_name1, self.person_type1)
+        allocated1 = self.dojo.create_room("office", ["White"])[1]
+        self.assertTrue(allocated1)
+
+    def test_create_room_auto_allocates_livingspaces_to_non_allocated_fellows(self):
+        self.dojo.add_person(self.person_name2, self.person_type2, 'Y')
+        allocated2 = self.dojo.create_room("livingspace", ["D8"])[1]
+        self.assertTrue(allocated2)
+
+    def test_create_room_does_not_auto_allocate_livingspace_unwanted_accomodation(self):
+        self.dojo.add_person(self.person_name3, self.person_type3, 'N')
+        allocated3 = self.dojo.create_room("livingspace", ["D11"])[1]
+        self.assertFalse(allocated3)
 
     def test_person_is_assigned_office_on_add_person_if_office_present(self):
         room_occupants_names = []
@@ -192,47 +207,96 @@ class TestDojo(unittest.TestCase):
         self.assertRaises(KeyError, self.dojo.print_room, "Unknown")
 
     def test_print_allocations_successfully(self):
-        # self.dojo.create_room("office", ["Blue", "Green", "Orange"])
-        # self.dojo.create_room("livingspace", ["Purple", "Pink"])
+        self.dojo.create_room("office", ["Blue", "Green", "Orange"])
+        self.dojo.create_room("livingspace", ["Purple", "Pink"])
 
-        add_person1 = self.dojo.add_person(self.person_name1, self.person_type1)
-        add_person2 = self.dojo.add_person(self.person_name2, self.person_type2, 'Y')
-        add_person3 = self.dojo.add_person(self.person_name3, self.person_type3, 'N')
-        add_person4 = self.dojo.add_person(self.person_name4, self.person_type4, 'Y')
-        add_person5 = self.dojo.add_person(self.person_name5, self.person_type5)
+        self.dojo.add_person(self.person_name1, self.person_type1)
+        self.dojo.add_person(self.person_name2, self.person_type2, 'Y')
+        self.dojo.add_person(self.person_name3, self.person_type3, 'N')
+        self.dojo.add_person(self.person_name4, self.person_type4, 'Y')
+        self.dojo.add_person(self.person_name5, self.person_type5)
 
-        allocations = self.dojo.print_allocations()
-        self.assertTrue(allocations)
+        self.assertTrue(self.dojo.print_allocations()[0])
 
     def test_print_allocations_raises_error_if_wrong_filename(self):
         self.dojo.create_room("office", ["White"])
-        add_person1 = self.dojo.add_person(self.person_name1, self.person_type1)
+        self.dojo.add_person(self.person_name1, self.person_type1)
         self.assertRaises(AttributeError, self.dojo.print_allocations, 4)
 
     def test_print_allocations_writes_to_file(self):
         self.dojo.create_room("office", ["Blue"])
         self.dojo.add_person("Eli Rwt", "staff")
         self.dojo.add_person("Eli1 Rwt1", "fellow", 'n')
-        self.assertTrue(self.dojo.print_allocations('room_occupants.txt'))
+        self.assertTrue(self.dojo.print_allocations('room_occupants.txt')[1])
 
-    def test_print_unallocated_successfully(self):
-        add_person1 = self.dojo.add_person(self.person_name1, self.person_type1)
-        add_person2 = self.dojo.add_person(self.person_name2, self.person_type2, 'Y')
-        add_person3 = self.dojo.add_person(self.person_name3, self.person_type3, 'N')
-        add_person4 = self.dojo.add_person(self.person_name4, self.person_type4, 'Y')
-        add_person5 = self.dojo.add_person(self.person_name5, self.person_type5)
-
-        non_allocations = self.dojo.print_unallocated()
-        self.assertTrue(non_allocations)
-
-    def test_print_unallocated_raises_error_if_wrong_filename(self):
-        add_person1 = self.dojo.add_person(self.person_name1, self.person_type1)
-        self.assertRaises(AttributeError, self.dojo.print_unallocated, 4)
-
-    def test_print_unallocated_writes_to_file(self):
+    def test_print_allocations_does_not_write_to_file_if_no_file_needed(self):
+        self.dojo.create_room("office", ["Blue"])
         self.dojo.add_person("Eli Rwt", "staff")
         self.dojo.add_person("Eli1 Rwt1", "fellow", 'n')
-        self.assertTrue(self.dojo.print_unallocated('non_room_occupants.txt'))
+        self.assertFalse(self.dojo.print_allocations()[1])
+
+    def test_print_unallocated_successfully(self):
+        self.dojo.add_person(self.person_name1, self.person_type1)
+        self.dojo.add_person(self.person_name2, self.person_type2, 'Y')
+        self.dojo.add_person(self.person_name3, self.person_type3, 'N')
+
+        person_increment = len(self.dojo.all_persons) - self.initial_person_count
+        self.assertEqual(len(self.dojo.print_unallocated()[0]), person_increment)
+
+    def test_print_unallocated_writes_to_file(self):
+        self.dojo.add_person(self.person_name1, self.person_type1)
+        self.dojo.add_person(self.person_name2, self.person_type2, 'Y')
+        self.dojo.add_person(self.person_name3, self.person_type3, 'N')
+
+        self.assertTrue(self.dojo.print_unallocated('non_room_occupants.txt')[1])
+
+    def test_print_unallocated_does_not_write_to_file_if_no_file_needed(self):
+        self.dojo.add_person(self.person_name1, self.person_type1)
+        self.dojo.add_person(self.person_name2, self.person_type2, 'Y')
+        self.dojo.add_person(self.person_name3, self.person_type3, 'N')
+
+        self.assertFalse(self.dojo.print_unallocated()[1])
+
+    def test_print_unallocated_raises_error_if_wrong_filename(self):
+        self.dojo.add_person(self.person_name1, self.person_type1)
+        self.assertRaises(AttributeError, self.dojo.print_unallocated, 4)
+
+    def test_reallocate_person_changes_staff_to_another_office(self):
+        self.dojo.create_room("office", ["White"])
+        self.dojo.add_person("John Doe", "staff")
+        self.dojo.create_room("office", ["Grey"])
+        reallocated = self.dojo.reallocate_person("John Doe", "Grey")
+
+        #compare tuples as (old_room, new_room)
+        self.assertEqual(("White", "Grey"), reallocated)
+
+    def test_reallocate_person_changes_fellow_to_another_office(self):
+        self.dojo.create_room("office", ["White"])
+        self.dojo.add_person("John Doe", "fellow", 'Y')
+        self.dojo.create_room("office", ["Grey"])
+        reallocated = self.dojo.reallocate_person("John Doe", "Grey")
+
+        #compare tuples as (old_room, new_room)
+        self.assertEqual(("White", "Grey"), reallocated)
+
+    def test_reallocate_person_changes_fellow_to_another_livingspace(self):
+        self.dojo.create_room("livingspace", ["Maroon"])
+        self.dojo.add_person("John Doe", "fellow", 'Y')
+        self.dojo.create_room("livingspace", ["Homely"])
+        reallocated = self.dojo.reallocate_person("John Doe", "Homely")
+
+        #compare tuples as (old_room, new_room)
+        self.assertEqual(("Maroon", "Homely"), reallocated)
+
+    def test_reallocate_person_does_not_allocate_staff_to_livingspace(self):
+        self.dojo.create_room("office", ["White"])
+        self.dojo.add_person("John Doe", "staff")
+        self.dojo.create_room("livingspace", ["Homely"])
+        reallocated = self.dojo.reallocate_person("John Doe", "Homely")
+        self.dojo.print_allocations()
+
+        #compare tuples as (old_room, new_room)
+        self.assertNotEqual(("White", "Homely"), reallocated)
 
 
 if __name__ == '__main__':

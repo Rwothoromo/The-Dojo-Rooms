@@ -21,6 +21,7 @@ class Staff(Person):
 
 class Fellow(Person):
     """Fellow inherits from Person class"""
-    def __init__(self, name):
+    def __init__(self, name, wants_accomodation):
         self.type = "FELLOW"
+        self.wants_accomodation = wants_accomodation
         super(Fellow, self).__init__(name)
