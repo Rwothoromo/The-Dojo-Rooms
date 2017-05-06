@@ -71,3 +71,4 @@ Fellow Eli2 Rwt2 has been successfully added.
 7.  `print_allocations("room_allocations.txt")`
 8.  `print_unallocated("non_allocated.txt")`
 9.  `reallocate("Eli2 Rwt2", "Blue")`
+10.  `load_people("persons.txt")`

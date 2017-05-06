@@ -85,7 +85,7 @@ class Dojo(object):
             person_name = ' '.join([name.capitalize() for name in person_name.lower().split()])
             if person_name in self.all_persons.keys():
                 raise ValueError("{} already exists".format(person_name))
-            
+
             if not wants_accommodation:
                 staff = Staff(person_name)
 
@@ -100,7 +100,7 @@ class Dojo(object):
             person_name = ' '.join([name.capitalize() for name in person_name.lower().split()])
             if person_name in self.all_persons.keys():
                 raise ValueError("{} already exists".format(person_name))
-            
+
             if not wants_accommodation:
                 raise ValueError("Fellow must indicate 'Y' or 'N' for accomodation")
 
@@ -134,7 +134,7 @@ class Dojo(object):
         return person_increment
 
     def allocate_office(self, person):
-        """assign an office to a person"""
+        """Assign an office to a person."""
 
         first_name = person.name.split(' ')[0]
         offices_available = [room for room in self.all_rooms.values() \
@@ -162,7 +162,7 @@ class Dojo(object):
             return random_office
 
     def allocate_livingspace(self, person):
-        """assign a LivingSpace to a person"""
+        """Assign a LivingSpace to a person."""
 
         first_name = person.name.split(' ')[0]
         livingspaces_available = [room for room in self.all_rooms.values() \
@@ -372,7 +372,7 @@ class Dojo(object):
         return(old_room, new_room)
 
     def return_person_rooms(self, person):
-        """Return a list of room objects in which person is an occupant"""
+        """Return a list of room objects in which person is an occupant."""
         person_rooms = []
         for room in self.all_rooms.values():
             for room_occupant in room.occupants:
@@ -381,4 +381,38 @@ class Dojo(object):
         return person_rooms
 
     def load_people(self, filename):
-        
+        """Retrieves people from a text file and allocates them to rooms."""
+
+        if not filename:
+            raise AttributeError("Provide source file!")
+
+        if filename and not isinstance(filename, str):
+            raise AttributeError("Filename must be a string!")
+
+        used_file = None
+        person_increment = 0
+        if isinstance(filename, str):
+            input_file = open(filename, 'r')
+            contents = input_file.read()
+            contents_list = contents.split('\n')
+            if input_file:
+                used_file = filename
+
+            for person in contents_list:
+                if len(person) < 3:
+                    pass
+
+                person_name = person[0].lower().capitalize() + ' ' \
+                                    + person[1].lower().capitalize()
+                person_type = person[2].upper()
+
+                if len(person) == 3:
+                    person_increment += self.add_person(person_name, person_type)
+
+                if len(person) == 4:
+                    wants_accommodation = person[3].upper()
+                    person_increment += self.add_person(person_name, person_type, \
+                                                                wants_accommodation)
+            input_file.close()
+
+        return (person_increment, used_file)

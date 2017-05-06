@@ -298,6 +298,15 @@ class TestDojo(unittest.TestCase):
         #compare tuples as (old_room, new_room)
         self.assertNotEqual(("White", "Homely"), reallocated)
 
+    def test_load_people_adds_persons_to_dojo(self):
+        add_people = self.dojo.load_people("persons.txt")
+        person_increment = len(self.dojo.all_persons) - self.initial_person_count
+
+        self.assertEqual((person_increment, "persons.txt"), add_people)
+
+    def test_load_people_raises_error_if_wrong_filename(self):
+        self.assertRaises(AttributeError, self.dojo.load_people, 4)
+
 
 if __name__ == '__main__':
     unittest.main()
