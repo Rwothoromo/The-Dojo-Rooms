@@ -93,12 +93,12 @@ class TestDojo(unittest.TestCase):
     def test_add_person_raises_errors_if_wrong_person_type_argument(self):
         self.dojo.create_room("office", ["White"])
         with self.assertRaises(AttributeError):
-            add_person1 = self.dojo.add_person(self.person_name1, 4)
+            self.dojo.add_person(self.person_name1, 4)
 
     def test_add_person_raises_errors_if_wrong_person_name_argument(self):
         self.dojo.create_room("office", ["White"])
         with self.assertRaises(AttributeError):
-            add_person1 = self.dojo.add_person(4, ["Blue"])
+            self.dojo.add_person(4, ["Blue"])
 
     def test_add_person_raises_errors_if_wrong_accomodation_argument(self):
         self.dojo.create_room("office", ["White"])
@@ -121,7 +121,7 @@ class TestDojo(unittest.TestCase):
         allocated2 = self.dojo.create_room("livingspace", ["D8"])[1]
         self.assertTrue(allocated2)
 
-    def test_create_room_does_not_auto_allocate_livingspace_to_non_allocated_fellows_who_dont_need_accomodation(self):
+    def test_create_room_does_not_auto_allocate_livingspace_unwanted_accomodation(self):
         self.dojo.add_person(self.person_name3, self.person_type3, 'N')
         allocated3 = self.dojo.create_room("livingspace", ["D11"])[1]
         self.assertFalse(allocated3)
@@ -260,11 +260,6 @@ class TestDojo(unittest.TestCase):
     def test_print_unallocated_raises_error_if_wrong_filename(self):
         self.dojo.add_person(self.person_name1, self.person_type1)
         self.assertRaises(AttributeError, self.dojo.print_unallocated, 4)
-
-    def test_print_unallocated_writes_to_file(self):
-        self.dojo.add_person("Eli Rwt", "staff")
-        self.dojo.add_person("Eli1 Rwt1", "fellow", 'n')
-        self.assertTrue(self.dojo.print_unallocated('non_room_occupants.txt'))
 
 
 if __name__ == '__main__':
