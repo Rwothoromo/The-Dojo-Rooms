@@ -261,6 +261,43 @@ class TestDojo(unittest.TestCase):
         self.dojo.add_person(self.person_name1, self.person_type1)
         self.assertRaises(AttributeError, self.dojo.print_unallocated, 4)
 
+    def test_reallocate_person_changes_staff_to_another_office(self):
+        self.dojo.create_room("office", ["White"])
+        self.dojo.add_person("John Doe", "staff")
+        self.dojo.create_room("office", ["Grey"])
+        reallocated = self.dojo.reallocate_person("John Doe", "Grey")
+
+        #compare tuples as (old_room, new_room)
+        self.assertEqual(("White", "Grey"), reallocated)
+
+    def test_reallocate_person_changes_fellow_to_another_office(self):
+        self.dojo.create_room("office", ["White"])
+        self.dojo.add_person("John Doe", "fellow", 'Y')
+        self.dojo.create_room("office", ["Grey"])
+        reallocated = self.dojo.reallocate_person("John Doe", "Grey")
+
+        #compare tuples as (old_room, new_room)
+        self.assertEqual(("White", "Grey"), reallocated)
+
+    def test_reallocate_person_changes_fellow_to_another_livingspace(self):
+        self.dojo.create_room("livingspace", ["Maroon"])
+        self.dojo.add_person("John Doe", "fellow", 'Y')
+        self.dojo.create_room("livingspace", ["Homely"])
+        reallocated = self.dojo.reallocate_person("John Doe", "Homely")
+
+        #compare tuples as (old_room, new_room)
+        self.assertEqual(("Maroon", "Homely"), reallocated)
+
+    def test_reallocate_person_does_not_allocate_staff_to_livingspace(self):
+        self.dojo.create_room("office", ["White"])
+        self.dojo.add_person("John Doe", "staff")
+        self.dojo.create_room("livingspace", ["Homely"])
+        reallocated = self.dojo.reallocate_person("John Doe", "Homely")
+        self.dojo.print_allocations()
+
+        #compare tuples as (old_room, new_room)
+        self.assertNotEqual(("White", "Homely"), reallocated)
+
 
 if __name__ == '__main__':
     unittest.main()

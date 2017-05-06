@@ -27,7 +27,8 @@ This system will be used to automatically allocate spaces to people at random, a
 * Fully setup!
 
 **App Usage**
-* Run `python main.py -i` on command prompt for a list of commands
+* Activate the virtual environment (See previous section)
+* Run `python main.py -h` on command prompt for a list of commands
 * Run `python main.py` to start
 * Type `help` on the prompt, `The Dojo Rooms: `
 * All you need to know is displayed

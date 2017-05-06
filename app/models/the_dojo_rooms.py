@@ -35,6 +35,7 @@ class Dojo(object):
 
         if room_type.lower() == 'office':
             for room in room_name:
+                room = room.lower().capitalize()
                 if room in self.all_rooms.keys():
                     print("{} room already exists".format(room))
                 else:
@@ -50,6 +51,7 @@ class Dojo(object):
 
         if room_type.lower() == 'livingspace':
             for room in room_name:
+                room = room.lower().capitalize()
                 if room in self.all_rooms.keys():
                     print("{} room already exists".format(room))
                 else:
@@ -79,11 +81,11 @@ class Dojo(object):
         if not isinstance(person_type, str):
             raise AttributeError("Person type must be a string")
 
-        if person_name in self.all_persons.keys():
-            raise ValueError("{} already exists".format(person_name))
-
         if person_type.upper() == 'STAFF':
             person_name = ' '.join([name.capitalize() for name in person_name.lower().split()])
+            if person_name in self.all_persons.keys():
+                raise ValueError("{} already exists".format(person_name))
+            
             if not wants_accommodation:
                 staff = Staff(person_name)
 
@@ -95,6 +97,10 @@ class Dojo(object):
                 raise AttributeError("Staff cannot seek accomodation")
 
         if person_type.upper() == 'FELLOW':
+            person_name = ' '.join([name.capitalize() for name in person_name.lower().split()])
+            if person_name in self.all_persons.keys():
+                raise ValueError("{} already exists".format(person_name))
+            
             if not wants_accommodation:
                 raise ValueError("Fellow must indicate 'Y' or 'N' for accomodation")
 
@@ -190,6 +196,7 @@ class Dojo(object):
         if not isinstance(room_name, str):
             raise AttributeError("Room name must be a string.")
 
+        room_name = room_name.lower().capitalize()
         if room_name not in self.all_rooms.keys():
             print("{} does not exist in rooms!".format(room_name))
 
@@ -310,3 +317,62 @@ class Dojo(object):
                 self.allocate_livingspace(person)
                 livingspace_occupants.append(person)
         return len(livingspace_occupants) - initial_occupant_count
+
+    def reallocate_person(self, person_name, room_name):
+        if not isinstance(person_name, str):
+            raise AttributeError("Person name must be a string")
+
+        if not isinstance(room_name, str):
+            raise AttributeError("Room name must be a string")
+
+        person_name = ' '.join([name.capitalize() for name in person_name.lower().split()])
+        if person_name not in self.all_persons.keys():
+            raise ValueError("{} does not exist!".format(person_name))
+
+        room_name = room_name.lower().capitalize()
+
+        if self.all_rooms[room_name]:
+            room = self.all_rooms[room_name]
+            person = self.all_persons[person_name]
+            person_rooms = self.return_person_rooms(person)
+            person_office = None
+            person_livingspace = None
+            old_room = None
+            new_room = None
+
+            if not room.check_room_availability:
+                raise ValueError("{} room is full!".format(room_name))
+
+            if room in person_rooms:
+                raise ValueError("{} is already in {} room!".format(person_name, room_name))
+
+            for room_object in person_rooms:
+                if isinstance(room, Office):
+                    person_office = room_object
+                if isinstance(room, LivingSpace):
+                    person_livingspace = room_object
+
+            if isinstance(room, Office) and person_office:
+                person_office.occupants.remove(person)
+                room.occupants.append(person)
+                print("{} has been re-located from office {} to office {}."\
+                        .format(person.name, person_office.name, room_name))
+                return (person_office.name, room_name)
+
+            if isinstance(room, LivingSpace) and isinstance(person, Fellow) \
+                            and person_livingspace:
+                person_livingspace.occupants.remove(person)
+                room.occupants.append(person)
+                print("{} has been re-located from office {} to office {}."\
+                        .format(person.name, person_livingspace.name, room_name))
+                return (person_livingspace.name, room_name)
+
+        return(old_room, new_room)
+
+    def return_person_rooms(self, person):
+        person_rooms = []
+        for room in self.all_rooms.values():
+            for room_occupant in room.occupants:
+                if room_occupant.name == person.name:
+                    person_rooms.append(room)
+        return person_rooms
