@@ -8,6 +8,7 @@ Usage:
   main.py print_allocations [<filename>]
   main.py print_unallocated [<filename>]
   main.py reallocate_person <first_name> <last_name> <room_name>
+  main.py load_people <filename>
   main.py
   main.py (-h | --help | --version)
 
@@ -99,13 +100,20 @@ class TheDojoRooms(cmd.Cmd):
         filename = arg["<filename>"]
         dojo.print_unallocated(filename)
 
-    # reallocate_person is used to reallocate a person from one room to another in The Dojo Rooms
+    # reallocate_person is used to relocate a person from one room to another in The Dojo Rooms
     @docopt_cmd
     def do_reallocate_person(self, arg):
         """Usage: reallocate_person <first_name> <last_name> <room_name>"""
         person_name = str(arg["<first_name>"]) + ' ' + str(arg["<last_name>"])
         room_name = arg["<room_name>"]
         dojo.reallocate_person(person_name, room_name)
+
+    # load_people is used to retrieve people from a text file and allocate them to rooms.
+    @docopt_cmd
+    def do_load_people(self, arg):
+        """Usage: load_people <filename>"""
+        filename = arg["<filename>"]
+        dojo.load_people(filename)
 
     def do_quit(self, arg):
         """Quits out of Interactive Mode."""
