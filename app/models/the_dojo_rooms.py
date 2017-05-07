@@ -5,6 +5,9 @@ This module contains the classes used for creating a person in the Dojo.
 import random
 from app.models.persons import Fellow, Staff
 from app.models.rooms import Office, LivingSpace
+from sqlalchemy.orm import sessionmaker
+from app.database.dojo_declarative_sqlalchemy import engine
+from app.database.dojo_declarative_sqlalchemy import DbFellows, DbStaff, DbOffices, DbLivingSpaces
 
 
 class Dojo(object):
@@ -349,9 +352,9 @@ class Dojo(object):
                 raise ValueError("{} is already in {} room!".format(person_name, room_name))
 
             for room_object in person_rooms:
-                if isinstance(room, Office):
+                if isinstance(room_object, Office):
                     person_office = room_object
-                if isinstance(room, LivingSpace):
+                if isinstance(room_object, LivingSpace):
                     person_livingspace = room_object
 
             if isinstance(room, Office) and person_office:
@@ -415,3 +418,63 @@ class Dojo(object):
             input_file.close()
 
         return (person_increment, used_file)
+
+    def save_state(self, db_name=None):
+        """Persists all the data stored in the app to a SQLite database."""
+
+        DBSession = sessionmaker(bind=engine)
+        session = DBSession()
+
+        # Create database objects
+        for room in self.all_rooms.values():
+            if isinstance(room, Office):
+                db_office = DbOffices(room.name)
+                session.add(db_office)
+
+            if isinstance(room, LivingSpace):
+                db_livingspace = DbLivingSpaces(room.name)
+                session.add(db_livingspace)
+
+        for person in self.all_persons.values():
+            with session.no_autoflush:
+                person_rooms = self.return_person_rooms(person)
+
+                for room_object in person_rooms:
+                    if isinstance(room_object, Office):
+                        person_office = room_object.name
+                    if isinstance(room_object, LivingSpace):
+                        person_livingspace = room_object.name
+
+                if isinstance(person, Staff):
+                    # retrieve the office id for the matching office name in the database
+                    office_query = session.query(DbOffices).filter_by(name=person_office).first()
+                    office_id = office_query.id
+
+                    db_staff = DbStaff(person.name, office_id)
+                    session.add(db_staff)
+
+                if isinstance(person, Fellow):
+                    # retrieve the office and livingspace ids for the matching
+                    # office and livingspace names in the database
+                    office_query = session.query(DbOffices).filter_by(name=person_office).first()
+                    livingspace_query = session.query(DbLivingSpaces).filter_by( \
+                                                                name=person_livingspace).first()
+
+                    office_id = office_query.id
+                    livingspace_id = livingspace_query.id
+
+                    wants_accomodation = 'N'
+                    if person.wants_accomodation:
+                        wants_accomodation = 'Y'
+
+                    db_fellow = DbFellows(person.name, office_id, livingspace_id, \
+                                                                            wants_accomodation)
+                    session.add(db_fellow)
+
+        # commit the data to the database
+        session.commit()
+        print("Data saved to database.")
+
+    def load_state(self, db_name=None):
+        """Loads data from a database into the application."""
+

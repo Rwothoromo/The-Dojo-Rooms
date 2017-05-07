@@ -9,6 +9,8 @@ Usage:
   main.py print_unallocated [<filename>]
   main.py reallocate_person <first_name> <last_name> <room_name>
   main.py load_people <filename>
+  main.py save_state [--db=sqlite_database]
+  main.py load_state <sqlite_database>
   main.py
   main.py (-h | --help | --version)
 
@@ -114,6 +116,20 @@ class TheDojoRooms(cmd.Cmd):
         """Usage: load_people <filename>"""
         filename = arg["<filename>"]
         dojo.load_people(filename)
+
+    # save_state persists all the data stored in the app to a SQLite database.
+    @docopt_cmd
+    def do_save_state(self, arg):
+        """Usage: save_state [--db=sqlite_database]"""
+        db_name = arg['--db']
+        dojo.save_state(db_name)
+
+    # load_state loads data from a database into the application.
+    @docopt_cmd
+    def do_load_state(self, arg):
+        """Usage: load_state [sqlite_database]"""
+        db_name = arg["<sqlite_database>"]
+        dojo.load_state(db_name)
 
     def do_quit(self, arg):
         """Quits out of Interactive Mode."""
