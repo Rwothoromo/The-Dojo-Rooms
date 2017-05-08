@@ -1,5 +1,3 @@
-import os
-import sys
 import datetime
 # import pytz
 from sqlalchemy import create_engine, ForeignKey
@@ -21,8 +19,6 @@ class DbOffices(Base):
 
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
-    staff = relationship("DbStaff", backref="offices")
-    fellows = relationship("DbFellows", backref="offices")
     date_created = Column(DateTime, default=datetime.datetime.now())
 
     def __init__(self, name):
@@ -36,7 +32,6 @@ class DbLivingSpaces(Base):
 
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
-    fellows = relationship("DbFellows", backref="livingspaces")
     date_created = Column(DateTime, default=datetime.datetime.now())
 
     def __init__(self, name):

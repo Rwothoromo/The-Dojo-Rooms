@@ -4,6 +4,7 @@ This module runs tests on the functionality of the_dojo_rooms.py.
 """
 
 import unittest
+import os.path
 from app.models.the_dojo_rooms import Dojo
 
 class TestDojo(unittest.TestCase):
@@ -306,6 +307,25 @@ class TestDojo(unittest.TestCase):
 
     def test_load_people_raises_error_if_wrong_filename(self):
         self.assertRaises(AttributeError, self.dojo.load_people, 4)
+
+    def test_save_state_saves_to_db(self):
+        self.dojo.create_room("office", ["sampleoffice"])
+        self.dojo.create_room("livingspace", ["sampleaccomodation"])
+        self.dojo.add_person("boss guy", "staff")
+        self.dojo.add_person("employee girl", "fellow", "y")
+
+        db_name = self.dojo.save_state()
+        # You can view database content from http://sqliteviewer.flowsoft7.com/
+
+        self.assertTrue(os.path.isfile(db_name))
+
+    def test_load_state_reads_from_db(self):
+        self.dojo.create_room("office", ["sampleoffice"])
+        self.dojo.save_state()
+        db_name = self.dojo.load_state()
+        # You can view database content from http://sqliteviewer.flowsoft7.com/
+
+        self.assertTrue(os.path.isfile(db_name))
 
 
 if __name__ == '__main__':
