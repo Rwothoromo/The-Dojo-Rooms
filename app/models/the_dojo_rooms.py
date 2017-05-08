@@ -495,7 +495,7 @@ class Dojo(object):
         """Loads data from a database into the application."""
 
         # You can view database content from http://sqliteviewer.flowsoft7.com/
-        
+
         DBSession = sessionmaker(bind=engine)
         session = DBSession()
 
