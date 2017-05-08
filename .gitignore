@@ -3,3 +3,4 @@ venv
 *.pyc
 non_room_occupants.txt
 room_occupants.txt
+dojo_rooms.db
