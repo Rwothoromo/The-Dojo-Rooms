@@ -123,13 +123,15 @@ class TheDojoRooms(cmd.Cmd):
         """Usage: save_state [--db=sqlite_database]"""
         db_name = arg['--db']
         dojo.save_state(db_name)
+        # You can view database content from http://sqliteviewer.flowsoft7.com/
 
     # load_state loads data from a database into the application.
     @docopt_cmd
     def do_load_state(self, arg):
-        """Usage: load_state [sqlite_database]"""
+        """Usage: load_state <sqlite_database>"""
         db_name = arg["<sqlite_database>"]
         dojo.load_state(db_name)
+        # You can view database content from http://sqliteviewer.flowsoft7.com/
 
     def do_quit(self, arg):
         """Quits out of Interactive Mode."""

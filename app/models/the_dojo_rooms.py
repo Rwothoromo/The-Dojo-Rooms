@@ -3,10 +3,13 @@
 This module contains the classes used for creating a person in the Dojo.
 """
 import random
+import os.path
 from app.models.persons import Fellow, Staff
 from app.models.rooms import Office, LivingSpace
 from sqlalchemy.orm import sessionmaker
-from app.database.dojo_declarative_sqlalchemy import engine
+from sqlalchemy import create_engine
+from sqlalchemy.ext.declarative import declarative_base
+from app.database.dojo_declarative_sqlalchemy import Base, engine
 from app.database.dojo_declarative_sqlalchemy import DbFellows, DbStaff, DbOffices, DbLivingSpaces
 
 
@@ -44,7 +47,7 @@ class Dojo(object):
                 else:
                     office = Office(room)
 
-                    # append room objects to room lists
+                    # append room objects to room dictionary
                     self.all_rooms[room] = office
                     print("An {} called {} has been successfully created!" \
                             .format(room_type.lower(), room))
@@ -60,7 +63,7 @@ class Dojo(object):
                 else:
                     livingspace = LivingSpace(room)
 
-                    # append room objects to room lists
+                    # append room objects to room dictionary
                     self.all_rooms[room] = livingspace
                     print("A {} called {} has been successfully created!" \
                             .format(room_type.lower(), room))
@@ -92,7 +95,7 @@ class Dojo(object):
             if not wants_accommodation:
                 staff = Staff(person_name)
 
-                # append person object to all_persons list
+                # append person object to all_persons dictionary
                 self.all_persons[person_name] = staff
                 print("{} {} has been successfully added.".format(staff.type, staff.name))
                 self.allocate_office(staff)
@@ -117,7 +120,7 @@ class Dojo(object):
                 person_name = ' '.join([name.capitalize() for name in person_name.lower().split()])
                 fellow = Fellow(person_name, wants_accomodation=False)
 
-                # append person object to all_persons list
+                # append person object to all_persons dictionary
                 self.all_persons[person_name] = fellow
                 print("{} {} has been successfully added.".format(fellow.type, fellow.name))
                 self.allocate_office(fellow)
@@ -126,7 +129,7 @@ class Dojo(object):
                 person_name = ' '.join([name.capitalize() for name in person_name.lower().split()])
                 fellow = Fellow(person_name, wants_accomodation=True)
 
-                # append person object to all_persons list
+                # append person object to all_persons dictionary
                 self.all_persons[person_name] = fellow
                 print("{} {} has been successfully added.".format(fellow.type, fellow.name))
                 self.allocate_office(fellow)
@@ -242,7 +245,7 @@ class Dojo(object):
                 ouput_file.write('\n\n')
         if write_to_file:
             ouput_file.close()
-            used_file = open(filename)
+            used_file = os.path.isfile(filename)
 
         return (self.allocated_rooms, used_file)
 
@@ -272,7 +275,8 @@ class Dojo(object):
                 ouput_file.write("\nMEMBER {},".format(individual))
         if write_to_file:
             ouput_file.close()
-            used_file = open(filename)
+            used_file = os.path.isfile(filename)
+
         return (unallocated_persons, used_file)
 
     def auto_allocate_office(self):
@@ -419,8 +423,10 @@ class Dojo(object):
 
         return (person_increment, used_file)
 
-    def save_state(self, db_name=None):
+    def save_state(self, db_name='dojo_rooms.db'):
         """Persists all the data stored in the app to a SQLite database."""
+
+        # engine = create_engine('sqlite:///%s' % db_name, echo=False) #disable logging with False
 
         DBSession = sessionmaker(bind=engine)
         session = DBSession()
@@ -429,52 +435,118 @@ class Dojo(object):
         for room in self.all_rooms.values():
             if isinstance(room, Office):
                 db_office = DbOffices(room.name)
-                session.add(db_office)
+                office_query = session.query(DbOffices).filter_by(name=room.name).first()
+                if not office_query:
+                    session.add(db_office)
 
             if isinstance(room, LivingSpace):
                 db_livingspace = DbLivingSpaces(room.name)
-                session.add(db_livingspace)
+                livingspace_query = session.query(DbLivingSpaces).filter_by( \
+                                                                        name=room.name).first()
+                if not livingspace_query:
+                    session.add(db_livingspace)
 
         for person in self.all_persons.values():
-            with session.no_autoflush:
-                person_rooms = self.return_person_rooms(person)
+            person_rooms = self.return_person_rooms(person)
 
-                for room_object in person_rooms:
-                    if isinstance(room_object, Office):
-                        person_office = room_object.name
-                    if isinstance(room_object, LivingSpace):
-                        person_livingspace = room_object.name
+            for room_object in person_rooms:
+                if isinstance(room_object, Office):
+                    person_office = room_object.name
+                if isinstance(room_object, LivingSpace):
+                    person_livingspace = room_object.name
 
-                if isinstance(person, Staff):
-                    # retrieve the office id for the matching office name in the database
-                    office_query = session.query(DbOffices).filter_by(name=person_office).first()
-                    office_id = office_query.id
+            if isinstance(person, Staff):
+                # retrieve the office id for the matching office name in the database
+                office_query = session.query(DbOffices).filter_by(name=person_office).first()
+                office_id = office_query.id
 
+                staff_query = session.query(DbStaff).filter_by(name=person.name).first()
+                if not staff_query:
                     db_staff = DbStaff(person.name, office_id)
                     session.add(db_staff)
 
-                if isinstance(person, Fellow):
-                    # retrieve the office and livingspace ids for the matching
-                    # office and livingspace names in the database
-                    office_query = session.query(DbOffices).filter_by(name=person_office).first()
-                    livingspace_query = session.query(DbLivingSpaces).filter_by( \
-                                                                name=person_livingspace).first()
+            if isinstance(person, Fellow):
+                # retrieve the office and livingspace ids for the matching
+                # office and livingspace names in the database
+                office_query = session.query(DbOffices).filter_by(name=person_office).first()
+                livingspace_query = session.query(DbLivingSpaces).filter_by( \
+                                                            name=person_livingspace).first()
 
-                    office_id = office_query.id
-                    livingspace_id = livingspace_query.id
+                office_id = office_query.id
+                livingspace_id = livingspace_query.id
 
-                    wants_accomodation = 'N'
-                    if person.wants_accomodation:
-                        wants_accomodation = 'Y'
+                wants_accomodation = 'N'
+                if person.wants_accomodation:
+                    wants_accomodation = 'Y'
 
+                fellow_query = session.query(DbFellows).filter_by(name=person.name).first()
+                if not fellow_query:
                     db_fellow = DbFellows(person.name, office_id, livingspace_id, \
-                                                                            wants_accomodation)
+                                                                        wants_accomodation)
                     session.add(db_fellow)
 
         # commit the data to the database
         session.commit()
         print("Data saved to database.")
+        # You can view database content from http://sqliteviewer.flowsoft7.com/
+        return db_name
 
-    def load_state(self, db_name=None):
+    def load_state(self, db_name='dojo_rooms.db'):
         """Loads data from a database into the application."""
 
+        # You can view database content from http://sqliteviewer.flowsoft7.com/
+        
+        DBSession = sessionmaker(bind=engine)
+        session = DBSession()
+
+        # Create objects
+        for room in session.query(DbOffices).order_by(DbOffices.id):
+            office = Office(room.name)
+
+            # append room objects to room dictionary
+            self.all_rooms[room.name] = office
+
+        for room in session.query(DbLivingSpaces).order_by(DbLivingSpaces.id):
+            livingspace = LivingSpace(room.name)
+
+            # append room objects to room dictionary
+            self.all_rooms[room.name] = livingspace
+
+        for person in session.query(DbStaff).order_by(DbStaff.id):
+            staff = Staff(person.name)
+
+            # append person object to all_persons dictionary
+            self.all_persons[person.name] = staff
+
+            # assign the staff an office
+            office_query = session.query(DbOffices).filter_by(id=person.office).first()
+            if office_query:
+                office = self.all_rooms[office_query.name]
+                office.add_occupant(staff)
+
+        for person in session.query(DbFellows).order_by(DbFellows.id):
+            if person.wants_accommodation == 'Y':
+                wants_accomodation = True
+            if person.wants_accommodation == 'N':
+                wants_accomodation = False
+
+            fellow = Fellow(person.name, wants_accomodation)
+
+             # append person object to all_persons dictionary
+            self.all_persons[person.name] = fellow
+
+            # assign the fellow an office
+            office_query = session.query(DbOffices).filter_by(id=person.office).first()
+            if office_query:
+                office = self.all_rooms[office_query.name]
+                office.add_occupant(fellow)
+
+            # assign the fellow a living space
+            livingspace_query = session.query(DbLivingSpaces).filter_by( \
+                                                            id=person.livingspace).first()
+            if livingspace_query:
+                livingspace = self.all_rooms[livingspace_query.name]
+                livingspace.add_occupant(fellow)
+
+        print("Data loaded from database.")
+        return db_name
