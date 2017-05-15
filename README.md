@@ -71,3 +71,5 @@ Fellow Eli2 Rwt2 has been successfully added.
 8.  `print_unallocated("non_allocated.txt")`
 9.  `reallocate("Eli2 Rwt2", "Blue")`
 10.  `load_people("persons.txt")`
+11.  `save_state()`
+12.  `load_state()`
