@@ -22,6 +22,7 @@ This system will be used to automatically allocate spaces to people at random, a
 * Run `git clone` for this repository on git bash and `cd` into the project root.
 * Run `pip install docopt` on command prompt
 * Run `pip install sqlalchemy` on command prompt
+* Run `pip install -r requirements.txt` on command prompt
 * Run `python main.py` on command prompt
 * You will see a prompt, `The Dojo Rooms: `
 * Fully setup!
