@@ -1,3 +1,6 @@
+[![Build Status](https://travis-ci.org/Rwothoromo/The_Dojo_Rooms.svg?branch=master)](https://travis-ci.org/Rwothoromo/The_Dojo_Rooms)
+[![Coverage Status](https://coveralls.io/repos/github/Rwothoromo/The_Dojo_Rooms/badge.svg?branch=master)](https://coveralls.io/github/Rwothoromo/The_Dojo_Rooms?branch=master)
+
 # The Dojo Rooms
 
 **Introduction**
