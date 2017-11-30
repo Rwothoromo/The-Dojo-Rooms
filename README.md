@@ -20,7 +20,7 @@ This system will be used to automatically allocate spaces to people at random, a
 * Create a virtualenv e.g. virtualenv venv
 * Activate it venv\Scripts\activate.bat
 * Run `git clone` for this repository on git bash and `cd` into the project root.
-* Run `pip install -r requirements.txt`
+* Run `pip install -r requirements.txt` on command prompt
 * Run `python main.py` on command prompt
 * You will see a prompt, `The Dojo Rooms: `
 * Fully setup!
