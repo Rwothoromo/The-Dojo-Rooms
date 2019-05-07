@@ -1,6 +1,6 @@
 # The Dojo Rooms
 
-[![Build Status](https://travis-ci.org/Rwothoromo/The_Dojo_Rooms.svg?branch=master)](https://travis-ci.org/Rwothoromo/The_Dojo_Rooms)
+[![Build Status](https://travis-ci.org/Rwothoromo/The-Dojo-Rooms.svg?branch=master)](https://travis-ci.org/Rwothoromo/The-Dojo-Rooms)
 
 This system will be used to automatically allocate room space to people at random.
 
