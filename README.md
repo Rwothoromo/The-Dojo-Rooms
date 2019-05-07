@@ -1,32 +1,35 @@
-[![Build Status](https://travis-ci.org/Rwothoromo/The_Dojo_Rooms.svg?branch=master)](https://travis-ci.org/Rwothoromo/The_Dojo_Rooms)
-
 # The Dojo Rooms
 
-**Introduction**
+[![Build Status](https://travis-ci.org/Rwothoromo/The_Dojo_Rooms.svg?branch=master)](https://travis-ci.org/Rwothoromo/The_Dojo_Rooms)
+
 This system will be used to automatically allocate room space to people at random.
 
-**UML - Unified Modelling Language Design**
-* Location: /designs
-* This design structure shows the relationship between the classes used in The Dojo Rooms.
+## UML - Unified Modelling Language Design
 
-**Technologies**
+This [design](/designs) structure shows the relationship between the classes used in The Dojo Rooms.
+
+## Technologies
+
 * Python 2.7
 * Sqlite database
 
-**Requirements**
+## Requirements
+
 * Install [Python 2.7](https://www.python.org/downloads/)
 * Install [virtualenv](http://docs.python-guide.org/en/latest/dev/virtualenvs/)
 
-**Setup**
+## Setup
+
 * Run `git clone` for this repository on git bash and `cd` into the project root.
 * Run `virtualenv venv` on command prompt
 * Run `venv\Scripts\activate.bat`
 * Run `pip install -r requirements.txt` on command prompt
 * Run `python main.py` on command prompt
-* You will see a prompt, `The Dojo Rooms: `
+* You will see a prompt, `The Dojo Rooms:`
 * Fully setup!
 
-**App Usage**
+## App Usage
+
 * Activate the virtual environment (See previous section)
 * Run `python main.py -h` on command prompt for a list of commands
 * Run `python main.py` to start
